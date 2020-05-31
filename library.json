@@ -1,0 +1,20 @@
+{
+  "name": "ModernPIDControlSS",
+  "keywords": "PID, control, controller, algorithm, signal processing, state space",
+  "description": "Modern Implementation (Simple form) of the PID Control Algorithm with 'Closed PID-Loop Model' Following Control Tuning",
+  "url": "http://playground.arduino.cc/ModernPIDControlSS",
+  "include": "ModernPIDControlSS.h, sfunPID.h, cpidlmfc.h, cplm_kernel.h, nlsig.h, testsys_ss.h",
+  "authors":
+  [
+    {
+      "name": "Oluwasegun Somefun",
+      "email": "oasomefun@futa.edu.ng"
+    }
+  ],
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/somefunagba/ModernPIDControlSS"
+  },
+  "frameworks": "arduino"
+}

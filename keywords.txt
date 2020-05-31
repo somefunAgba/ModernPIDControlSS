@@ -1,0 +1,34 @@
+#######################################
+# Syntax Coloring Map For PID Library
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+PIDNet	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+cpidlmfc KEYWORD2
+tuneWn KEYWORD2
+sfunPID_init	KEYWORD2
+sfunPID_kernel	KEYWORD2
+cplm_kernel	KEYWORD2
+tuneKp	KEYWORD2
+tuneKi	KEYWORD2
+tuneKd	KEYWORD2
+
+testsys_ss	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+Kp	LITERAL1
+Ki	LITERAL1
+Kd	LITERAL1
+lambdai	LITERAL1
+lambdad	LITERAL1
