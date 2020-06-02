@@ -5,10 +5,11 @@ nav:
   - About: about.md
 
 # Theme Configuration
-#theme: mkdocs
 theme:
-  name: null
-  custom_dir: material
+  name: material
+#theme:
+#  name: null
+#  custom_dir: material
 
   # 404 page
   static_templates:
@@ -24,15 +25,67 @@ theme:
     - tabs
     - instant
   palette:
-    scheme: default
+    scheme: slate #default
     primary: indigo
     accent: indigo
   font:
     text: Roboto
     code: Roboto Mono
   icon:
-    logo: logo
-  favicon: assets/favicon.png
+    logo: material/function-variant  #fontawesome/brands/youtube
+  favicon: material/help-network #assets/images/favicon.png
 
 repo_name: ModernPIDControlSS
 repo_url: https://github.com/somefunagba/ModernPIDControlSS
+
+# Extensions
+markdown_extensions:
+  - markdown.extensions.admonition
+  - markdown.extensions.attr_list
+  - markdown.extensions.codehilite:
+      guess_lang: false
+  - markdown.extensions.def_list
+  - markdown.extensions.footnotes
+  - markdown.extensions.meta
+  - markdown.extensions.toc:
+      permalink: true
+  - pymdownx.arithmatex
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+        # - pymdownx.highlight:
+      #     linenums_style: pymdownx-inline
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      repo_url_shorthand: true
+      user: squidfunk
+      repo: mkdocs-material
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.snippets:
+      check_paths: true
+  - pymdownx.superfences
+  - pymdownx.tabbed
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+
+  # Plugins
+plugins:
+  - search
+  - minify:
+      minify_html: true
+  - git-revision-date-localized:
+      type: date #datetime, timeago
+
+
+extra_javascript:
+  - javascripts/extra.js
+  - https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML
