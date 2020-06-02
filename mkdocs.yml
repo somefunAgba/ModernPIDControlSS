@@ -5,11 +5,11 @@ nav:
   - About: about.md
 
 # Theme Configuration
-theme:
-  name: material
 #theme:
-#  name: null
-#  custom_dir: material
+#  name: material
+theme:
+  name: null
+  custom_dir: material
 
   # 404 page
   static_templates:
