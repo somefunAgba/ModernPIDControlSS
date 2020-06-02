@@ -33,7 +33,7 @@ theme:
     code: Roboto Mono
   icon:
     logo: material/function-variant  #fontawesome/brands/youtube
-  favicon: material/help-network #assets/images/favicon.png
+  favicon: assets/images/favicon.png
 
 repo_name: ModernPIDControlSS
 repo_url: https://github.com/somefunagba/ModernPIDControlSS
