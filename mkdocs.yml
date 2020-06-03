@@ -25,7 +25,7 @@ theme:
     - tabs
     - instant
   palette:
-    scheme: slate #default
+    scheme: default #slate
     primary: indigo
     accent: indigo
   font:
