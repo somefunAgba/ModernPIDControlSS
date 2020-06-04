@@ -1,8 +1,14 @@
 site_name: ModernPIDControlSS Documentation
+dev_addr: '127.0.0.1:8000'
+docs_dir: 'docs'
+site_dir: 'site'
+
 # Page tree
 nav:
-  - Home: index.md
-  - About: about.md
+  - Guide: 'index.md'
+  - About:
+    - About: 'about.md'
+    - License: 'license.md'
 
 # Theme Configuration
 #theme:
@@ -86,7 +92,7 @@ markdown_extensions:
 plugins:
   - search
   - minify:
-      minify_html: true
+      minify_html: false
   - git-revision-date-localized:
       type: date #datetime, timeago
 

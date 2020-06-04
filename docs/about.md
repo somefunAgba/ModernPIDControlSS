@@ -7,16 +7,18 @@ It features:
 
 1. Simplified Bilinear Discretization for Integration and Differentiation
 
-2. Individual Critic Contributions Control
+2. Filtering: Information theory perspective of Signal processing
 
-3. Two Degree-of-Freedom Control
+3. Critic Contributions
 
-4. Closed PID-Loop Model Following Control
+4. Two Degree-of-Freedom Control Structure
 
 5. Automatic Anti-windup Control
 
+6. Real-time Tuning: Closed PID-Loop Model Following Control
 
-## What is Tuning
+
+## Closed PID-Loop Model Following Control
 **Closed PID-Loop Model Following Control** is the method used  
 to tune the PID is detailed in this paper **CPLMFC**.
 For more details on the theory, see [Closed PID-Loop Model Following Control Preprint](https://arxiv.org/pdf/2006.00314).
@@ -27,7 +29,5 @@ For more details on the theory, see [Closed PID-Loop Model Following Control Pre
 <!--putavi libertas *in ego* quodcumque mutata. Armeniae proferre nomine Olympus-->
 <!--procul, est si amante intercipe Hesperium ad regis revulsit flammasque mersurum-->
 <!--mansit Alcyonen iam furit?-->
-
-## What is a PID?
 
 
