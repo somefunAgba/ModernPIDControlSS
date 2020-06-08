@@ -379,8 +379,16 @@
                 
                 
                 <h1 id="about">About<a class="headerlink" href="#about" title="Permanent link">&para;</a></h1>
-<p>This realization of the PID control algorithm has all the practical problems of PID control implementation,
-internally addressed in the PID algorithm itself.</p>
+<p>Many accounts available online, as regards the implementation of a PID controller, modify the simplified overview representation using some so-called practical issues namely:
+1. Sampling
+2. Noisy Derivative Contributions
+3. Set-point and Derivative Kick
+4. Integral Anti-windup
+5. Bumpless Parameter Changes.</p>
+<p>However, from knowledge available in current modern control systems theory and application, this modifications can be viewed as the result of shortcomings in classical controller representations. The design and realization of a modern controller should inherently address this issues.</p>
+<p>For example, Issue 1 is necessary for discrete-time implementation (software). Issue 2 is covered by digital signal-processing information theory in relation to Issue 1. Issue 3 is covered by the two-degree of freedom control structure. Issue 4 is covered by modern anti-windup synthesis. Issue 5 is covered by similarly treating the effect of parameter changes as a wind-up problem.</p>
+<p>In this library, the realization of the PID control algorithm addresses
+all these issues internally as part of the control design.</p>
 <p>It features:</p>
 <ol>
 <li>
