@@ -92,7 +92,7 @@ void setup() {
     
     /* CPLMFC Tuning HyperParameter Config. */
     int Nts = 228; // settling horizon: set after settling-time identification
-    ts = Nts*d; // settling time (including delay time)
+    ts = Nts*dt; // settling time (including delay time)
     L = 0*dt; // estimated transport or delay time
     /* Hyper-Parameter for Kp and Critic Weights */
     alpha = 20.0; //  for P
@@ -111,7 +111,8 @@ void setup() {
 ### Settling-Time Identification Loop
 
 === "C++"
-``` c++
+```c++
+        
         ...
         /* SYS ID- START */
         if (sys_id == 1) {
@@ -122,10 +123,7 @@ void setup() {
             PIDobj_II.u = ref_id - PIDobj_II.y; // SYS ID- END
         }
         ...
-
 ```
-
-
 
 ### PID-Control Loop
 
