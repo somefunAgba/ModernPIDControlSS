@@ -1,14 +1,31 @@
+# Copyright (c) 2016-2020 Martin Donath <martin.donath@squidfunk.com>
+
 site_name: ModernPIDControlSS Documentation
-dev_addr: '127.0.0.1:8000'
+repo_name: ModernPIDControlSS
+repo_url: https://github.com/somefunagba/ModernPIDControlSS
+edit_uri: ''
+site_author: Oluwasegun Somefun
+site_description: >-
+  A C/C++ (Arduino) library for the PID law. Features a more complete realization
+  and design of the PID law using tools from modern control theory, and signal processing.
+  Available for use for your open-source project
+
+copyright: Copyright &copy; 2019 - 2020. Oluwasegun Somefun
+remote_branch: gh-pages
+remote_name: origin
+dev_addr: '127.0.0.1:8800'
 docs_dir: 'docs'
 site_dir: 'site'
 
 # Page tree
 nav:
-  - Guide: 'index.md'
+  - Home: 'index.md'
+  - Guide: 'guide.md'
   - About:
-    - About: 'about.md'
-    - License: 'license.md'
+    - About: 'about/about.md'
+    - License: 'about/license.md'
+  - Releases:
+    - Release Log: 'releases/release.md'
 
 # Theme Configuration
 #theme:
@@ -29,11 +46,11 @@ theme:
   language: en
   features:
     - tabs
-    - instant
+    #- instant
   palette:
     scheme: default #slate
-    primary: indigo
-    accent: indigo
+    primary: deep orange
+    accent: deep purple
   font:
     text: Roboto
     code: Roboto Mono
@@ -41,12 +58,7 @@ theme:
     logo: material/function-variant  #fontawesome/brands/youtube
   favicon: assets/images/favicon.png
 
-repo_name: ModernPIDControlSS
-repo_url: https://github.com/somefunagba/ModernPIDControlSS
-site_author: Oluwasegun Somefun
-copyright: Copyright &copy; 2020-20xx Oluwasegun Somefun
-remote_branch: gh-pages
-remote_name: origin
+
 
 # Extensions
 markdown_extensions:
@@ -100,3 +112,14 @@ plugins:
 extra_javascript:
   - javascripts/extra.js
   - https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML
+
+# Customizations
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/somefunagba
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/somefunagba
+    - icon: fontawesome/brands/linkedin
+      link: https://linkedin.com/in/oluwasegunsomefun/

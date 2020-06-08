@@ -6,7 +6,7 @@ template: overrides/main.html
 
 **MIT License**
 
-Copyright &copy; 2020-20xx Oluwasegun Somefun <oasomefun@futa.edu.ng>
+Copyright &copy; 2019-Present Oluwasegun Somefun <oasomefun@futa.edu.ng>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
