@@ -284,8 +284,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a class="md-nav__link" href="#closed-loop-settling-time-identification-loop">
-    Closed-loop Settling-Time Identification Loop
+  <a class="md-nav__link" href="#settling-time-identification-loop">
+    Settling-Time Identification Loop
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a class="md-nav__link" href="#pid-control-loop">
+    PID-Control Loop
   </a>
   
 </li>
@@ -418,8 +425,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a class="md-nav__link" href="#closed-loop-settling-time-identification-loop">
-    Closed-loop Settling-Time Identification Loop
+  <a class="md-nav__link" href="#settling-time-identification-loop">
+    Settling-Time Identification Loop
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a class="md-nav__link" href="#pid-control-loop">
+    PID-Control Loop
   </a>
   
 </li>
@@ -542,7 +556,7 @@ The process is illustrated as shown:</p>
 
     <span class="cm">/* CPLMFC Tuning HyperParameter Config. */</span>
     <span class="kt">int</span> <span class="n">Nts</span> <span class="o">=</span> <span class="mi">228</span><span class="p">;</span> <span class="c1">// settling horizon: set after settling-time identification</span>
-    <span class="n">ts</span> <span class="o">=</span> <span class="n">Nts</span><span class="o">*</span><span class="n">d</span><span class="p">;</span> <span class="c1">// settling time (including delay time)</span>
+    <span class="n">ts</span> <span class="o">=</span> <span class="n">Nts</span><span class="o">*</span><span class="n">dt</span><span class="p">;</span> <span class="c1">// settling time (including delay time)</span>
     <span class="n">L</span> <span class="o">=</span> <span class="mi">0</span><span class="o">*</span><span class="n">dt</span><span class="p">;</span> <span class="c1">// estimated transport or delay time</span>
     <span class="cm">/* Hyper-Parameter for Kp and Critic Weights */</span>
     <span class="n">alpha</span> <span class="o">=</span> <span class="mf">20.0</span><span class="p">;</span> <span class="c1">//  for P</span>
@@ -558,7 +572,7 @@ The process is illustrated as shown:</p>
 <span class="p">}</span>
 </code></pre></div>
 
-<h3 id="closed-loop-settling-time-identification-loop">Closed-loop Settling-Time Identification Loop<a class="headerlink" href="#closed-loop-settling-time-identification-loop" title="Permanent link">&para;</a></h3>
+<h3 id="settling-time-identification-loop">Settling-Time Identification Loop<a class="headerlink" href="#settling-time-identification-loop" title="Permanent link">&para;</a></h3>
 <div class="tabbed-set" data-tabs="3:1"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><label for="__tabbed_3_1">C++</label><div class="tabbed-content"></div>
 </div>
 <div class="highlight"><pre><span></span><code>        <span class="p">...</span>
@@ -571,13 +585,12 @@ The process is illustrated as shown:</p>
             <span class="n">PIDobj_II</span><span class="p">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">ref_id</span> <span class="o">-</span> <span class="n">PIDobj_II</span><span class="p">.</span><span class="n">y</span><span class="p">;</span> <span class="c1">// SYS ID- END</span>
         <span class="p">}</span>
         <span class="p">...</span>
- <span class="err">```</span>
+</code></pre></div>
 
-<span class="cp">### PID-Control Loop</span>
-
-<span class="o">===</span> <span class="s">&quot;C++&quot;</span>
-<span class="err">```</span> <span class="n">c</span><span class="o">++</span>
-    <span class="p">...</span>
+<h3 id="pid-control-loop">PID-Control Loop<a class="headerlink" href="#pid-control-loop" title="Permanent link">&para;</a></h3>
+<div class="tabbed-set" data-tabs="4:1"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><label for="__tabbed_4_1">C++</label><div class="tabbed-content"></div>
+</div>
+<div class="highlight"><pre><span></span><code>    <span class="p">...</span>
     <span class="n">tstart</span> <span class="o">=</span> <span class="n">micros</span><span class="p">()</span><span class="o">/</span><span class="kt">double</span><span class="p">(</span><span class="mi">1000000</span><span class="p">);</span>
     <span class="n">t</span> <span class="o">=</span> <span class="n">t</span> <span class="o">-</span> <span class="n">tstart</span><span class="p">;</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">t</span> <span class="o">&gt;=</span><span class="p">(</span> <span class="p">(</span><span class="n">PIDobj_II</span><span class="p">.</span><span class="n">T_prev</span><span class="o">+</span><span class="n">PIDobj_II</span><span class="p">.</span><span class="n">Ts</span><span class="p">)</span><span class="o">-</span><span class="p">(</span><span class="mf">0.5</span><span class="o">*</span><span class="n">PIDobj_II</span><span class="p">.</span><span class="n">Ts</span><span class="p">)</span> <span class="p">))</span> <span class="p">{</span>
@@ -625,7 +638,7 @@ The process is illustrated as shown:</p>
 <div class="md-source-date">
   <small>
     
-      Last update: June 2, 2020
+      Last update: June 8, 2020
     
   </small>
 </div>
