@@ -2,7 +2,7 @@
 
 **A Modern PID Control [Arduino](https://www.arduino.cc/) Library**
 
-[![GitHub Action](https://github.com/somefunagba/ModernPIDControlSS/workflows/ci/badge.svg?branch=production)](https://github.com/somefunagba/ModernPIDControlSS/actions)
+<!--[![GitHub Action](https://github.com/somefunagba/ModernPIDControlSS/workflows/ci/badge.svg?branch=production)](https://github.com/somefunagba/ModernPIDControlSS/actions)-->
 
  A C/C++ (Arduino) library for the PID law. Features a more complete realization and design of the PID law using tools from modern control theory, and signal processing. Available for use in open-source projects.
 
