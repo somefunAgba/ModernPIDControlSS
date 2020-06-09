@@ -33,7 +33,7 @@ PIDNet PIDobj_I(r[0], y[0], dt[0],
         umax[0], umin[0]);
 PIDNet PIDobj_II(r[1], y[1], dt[1],
        umax[1], umin[1]);
-int loopnum = 2;
+//int loopnum = 2;
 
 void setup() {
     // Turn on Serial Comms.

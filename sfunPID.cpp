@@ -7,7 +7,7 @@
 
 /* Include Files */
 #include "sfunPID.h"
-#include "nlsig.h"
+//#include "nlsig.h"
 
 /* Constructor Init */
 PIDNet::PIDNet(double ref, double yout, double Tsample,
