@@ -1,4 +1,6 @@
-[![ModernPIDControlSS](https://raw.githubusercontent.com/somefunAgba/ModernPIDControlSS/master/material/assets/images/function-variant.svg)](https://somefunagba.github.io/ModernPIDControlSS)
+<a href="https://somefunagba.github.io/ModernPIDControlSS">
+<img alt="ModernPIDControlSS" src="https://raw.githubusercontent.com/somefunAgba/ModernPIDControlSS/master/material/assets/images/function-variant.svg" width="150" />
+</a>
 
 **A Modern PID Control [Arduino](https://www.arduino.cc/) Library**
 
