@@ -20,7 +20,8 @@ For a detailed explanation of the library, installation, release, and use guides
 
 *Yes, a demo is worth a thousand words. Please, the guides will be updated gradually.*
 
-If you are like or use this library, please consider giving it a **star** on github.
+If you like or use this library, please consider giving it a **star** on github.
 
 ***************************************************************
-**This Library is Copyrighted. Do not use for commercial purpose without the author's permission.**
+**This library is copyrighted under the MIT License. 
+I will appreciate a notice by e-mail, if used for commercial purpose.**
