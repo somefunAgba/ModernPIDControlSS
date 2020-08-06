@@ -24,4 +24,4 @@ If you like or use this library, please consider giving it a **star** on github.
 
 ***************************************************************
 **This library is copyrighted under the MIT License. 
-I will appreciate a notice by e-mail, if used for commercial purpose.**
+I will appreciate a notice by e-mail, if used for non-commercial or commercial purpose.**

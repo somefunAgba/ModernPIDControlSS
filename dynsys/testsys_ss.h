@@ -15,6 +15,7 @@
 
 /* Func Decls. */
 void testsys_ss(double& y, double* x, double dt, double u, double xnoise, double ynoise);
+
 template<class T>
 T dead_zone(const double& uin, const int& dead_max, const int& dead_min);
 

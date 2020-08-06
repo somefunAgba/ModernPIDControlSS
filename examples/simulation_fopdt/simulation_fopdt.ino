@@ -9,8 +9,6 @@
 /* Tuning Parameters */
 double wn[2];
 float alpha[2];
-int b;
-int c;
 
 /* Timing Information */
 double L[2];
@@ -25,7 +23,7 @@ int countseq = 0;
 
 const int umin[2] = {-255, -255};
 const int umax[2] = {255, 255};
-const int dead_max[2] = {100, 100};
+const int dead_max[2] = {0, 100};
 const int dead_min[2] = {10, 10}; // zero tolerance limits
 
 /* Parameters PID Structure Config. */
@@ -45,21 +43,21 @@ void setup() {
     PIDobj_I.b = 1;
     PIDobj_I.c = 0;
     PIDobj_II.b = 1;
-    PIDobj_II.c = 0;
-    PIDobj_I.follow = 1;
-    PIDobj_II.follow = 1;
+    PIDobj_II.c = 1;
+    PIDobj_I.follow = 0;
+    PIDobj_II.follow = 0;
     PIDobj_I.Ts = dt[0];
     PIDobj_II.Ts = dt[1];
     /* CPLMFC Tuning HyperParameter Config. */
-    int Nts = 228;
+    int Nts = 228; // 228 FOR 0.01; // this value changes if the sampling time changes
     ts = Nts*dt[0]; // settling time (including delay time)
     L[0] = 0*dt[0];
     L[1] = 0*dt[1]; // estimated transport or delay time
     /* Hyper-Parameter for Kp and Critic Weights */
     alpha[0] = 20.0; //  for P
-    alpha[1] = 10.0;
+    alpha[1] = 20.0;
     // for D
-    PIDobj_I.lambdad = 0.01;
+    PIDobj_I.lambdad = 0.1;
     PIDobj_II.lambdad = 0.1;
     // I
     PIDobj_I.lambdai = 0.5;
@@ -79,11 +77,12 @@ double uin[2];
 double tstart = 0;
 double ref_id;
 int sys_id = 0;
+double compute_time_delay = 0.0;
 //
 void loop() {
  // Ensure Notion of fixed sampling
     //tstart = 0;
-    tstart = micros()/double(1000000);
+    tstart = micros()/1000000.0;
     while (countseq >= 0) {
         t = t - tstart;
         // Serial.print("Time: ");Serial.print(t);Serial.print(" | ");Serial.println(countseq);
@@ -110,6 +109,7 @@ void loop() {
             //Serial.print("upwm_I: "); Serial.println(PIDobj_I.u);
         }
 
+
         // t = t + PIDobj_I.Ts; // sysid
         // t = micros()/double(1000000);
         /* PLANT II PID CONTROL LOOP */
@@ -135,14 +135,17 @@ void loop() {
             //Serial.print("upwm_II: "); Serial.println(PIDobj_II.u);
         }
 
+        compute_time_delay = (micros()/1000000.0) - t;
 
         /* SYS ID- START */
         if (sys_id == 1) {
             if (countseq==0) {
                 ref_id = 1*255;
                 PIDobj_I.y = 1*255;
+                PIDobj_II.y = 1*255;
             }
             PIDobj_I.u = ref_id-PIDobj_I.y; // SYS ID- END
+            PIDobj_II.u = ref_id-PIDobj_II.y; // SYS ID- END
         }
         /* Simulate Control Input to Plant I */
         // dead-zone disturbance
@@ -157,12 +160,12 @@ void loop() {
         //Serial.println(PIDobj_II.y);
 
         //Serial.print(F("Y: "));
-        Serial.print((String) PIDobj_I.y + "," + PIDobj_I.ym + ","
-          + PIDobj_II.y + "," + PIDobj_II.ym + "," + countseq);
-//        Serial.print((String) countseq + "," + PIDobj_I.y + "," + PIDobj_I.ym + ","
-//                     + PIDobj_II.y + "," + PIDobj_II.ym + ","
-//                     + PIDobj_I.Kp + "," + PIDobj_I.Ki + "," + PIDobj_I.Kd + ","
-//                     + PIDobj_II.Kp + "," + PIDobj_II.Ki + "," + PIDobj_II.Kd);
+//        Serial.print((String) PIDobj_I.y + "," + PIDobj_I.ym + ","
+//          + PIDobj_II.y + "," + PIDobj_II.ym + "," + countseq + "," +
+//          compute_time_delay);
+        //Serial.print((String) PIDobj_I.Kp + "," + PIDobj_II.Kp);
+        //Serial.print((String) PIDobj_I.Ki + "," + PIDobj_II.Ki);
+        //Serial.print((String) PIDobj_I.Kd + "," + PIDobj_II.Kd);
 
         Serial.println();
         //Serial.println(F("---\n"));
@@ -172,7 +175,7 @@ void loop() {
             break;
         }
         // t = t + PIDobj_I.Ts; // sysid
-        t = micros()/double(1000000);
+        t = micros()/1000000.0;
     }
 
 }

@@ -3,7 +3,6 @@
 //
 
 #include "cpidlmfc.h"
-#include "nlsig.h"
 
 void tuneKi(PIDNet& Knet, double wn) {
     /* integral time constant*/

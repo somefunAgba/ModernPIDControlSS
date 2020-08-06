@@ -7,7 +7,8 @@
 
 /* Include Files */
 #include "sfunPID.h"
-//#include "nlsig.h"
+#include "nlsig/nlsig.h"
+#include "helpers/norm_denorm_kernel.h"
 
 /* Constructor Init */
 PIDNet::PIDNet(double ref, double yout, double Tsample,
@@ -58,7 +59,7 @@ PIDNet::PIDNet(double ref, double yout, double Tsample,
  */
 void sfunPID_kernel(PIDNet& Knet, const double& t) {
 
-    double ym, yfict, e_u, Keu, ep, cut_freq, kpi, kui;
+    double ym, yfict, e_u, Keu, ep, cut_freq, kpi, kui, du;
 
     Knet.T_prev = t;
     /*  Discretization Scheme */
@@ -140,7 +141,48 @@ void sfunPID_kernel(PIDNet& Knet, const double& t) {
     /* combined output recalculation */
     Knet.u = Knet.v - Knet.ua;
 
-//    /*  Actual Control Input Constraints for u */
+    /*  Actual Control Input Constraints for u */
+	Serial.print("bef_Knet.u="); Serial.println(Knet.u);
+	
+    // SATURATION
+    //Knet.u = maxim((double) Knet.umin, (minim(Knet.u, (double) Knet.umax)));
+	
+	/* Hard Saturation */
+    Knet.u = fmax((double) Knet.umin,
+            fmin(Knet.u, (double) Knet.umax
+            ));
+
+	/* Logistic Saturation*/
+    nlsig(Knet.u, du, Knet.u, (double)Knet.umax, (double)Knet.umin,
+            (double)Knet.umax, (double)Knet.umin,
+            33, 6, 0, 0);
+    Serial.print("aft_Knet.u="); Serial.println(Knet.u);
+
+//    double u_norm[1] = {1.0};
+//    double u_act[1] = {Knet.u};
+//
+//    //Serial.print("prior: "); Serial.println(Knet.u);
+//    normalize<double>(u_act, u_norm, Knet.umax, Knet.umin);
+//    // Serial.print("norm: "); Serial.println(u_norm[0]);
+//    u_norm[0] = nlsig(u_norm[0], 1.0, -1.0,
+//            1.0, -1.0,
+//            33, 6, 0);
+//    //Serial.print("out_norm: "); Serial.println(u_norm[0]);
+//    denormalize<double>(u_norm, u_act, Knet.umax, Knet.umin);
+//    Knet.u = u_act[0];
+//    //Serial.print("after: "); Serial.println(Knet.u);
+
+    // Serial.print("UPWM: ");Serial.println(Knet.u); // debug
+
+    /* Misc. House Keeping */
+    // increment internal sample count for the PID.
+    Knet.countseq += 1;
+
+}
+
+
+
+
 //    /* SATURATION EQUIVALENCE OF SATURATION, DEAD-ZONE AND COULOMB FRICTION */
 //    // NL(.) 1-2 . DEAD-ZONE, min AND INVERSE DEAD-ZONE, max
 //    if ((fabs(Knet.u) <= fabs(Knet.zerotol))) {
@@ -154,28 +196,6 @@ void sfunPID_kernel(PIDNet& Knet, const double& t) {
 //        // added deadmax as disturbance, effect of coulomb friction in a sense.
 //        Knet.u = copysign(fabs(Knet.u + Knet.deadmax), Knet.u);
 //    }
-    // NL(.)3 SATURATION
-    //Knet.u = maxim((double) Knet.umin, (minim(Knet.u, (double) Knet.umax)));
-    Knet.u = fmax((double) Knet.umin,
-            fmin(Knet.u, (double) Knet.umax
-            ));
-/* Logistic Saturation*/
-//    Knet.u = nlsig(Knet.v, (double) Knet.umax, (double) Knet.umin,
-//            (double) Knet.umax, (double) Knet.umin,
-//            33, 24.0/(33+2.0), 0);
-
-
-    /* Floating Point Error Prevention */
-    if (fabs(Knet.u) < 0.000001) {
-        Knet.u = 0;
-    }
-    // Serial.print("UPWM: ");Serial.println(Knet.u); // debug
-
-    /* Misc. House Keeping */
-    // increment internal sample count for the PID.
-    Knet.countseq += 1;
-
-}
 
 /*
  * File trailer for sfunPID.cpp

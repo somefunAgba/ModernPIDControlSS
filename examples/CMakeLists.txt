@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 2.8.4)
 set(PROJECT_NAME examples)
-set(${PROJECT_NAME}_BOARD mega)
- set(ARDUINO_CPU atmega2560)
+set(${PROJECT_NAME}_BOARD uno)
+#set(${PROJECT_NAME}_BOARD mega)
+# set(ARDUINO_CPU atmega2560)
 
 project(${PROJECT_NAME})
 
@@ -10,7 +11,7 @@ link_directories(${CMAKE_CURRENT_SOURCE_DIR}/)
 
 set(${PROJECT_NAME}_SKETCH simulation_fopdt/simulation_fopdt.ino)
 #Set up target COM port, which is connect to the board
-set(${PROJECT_NAME}_PORT COM3)
+set(${PROJECT_NAME}_PORT COM5)
 
 set(${PROJECT_NAME}_LIBS ModernPIDControlSS)
 

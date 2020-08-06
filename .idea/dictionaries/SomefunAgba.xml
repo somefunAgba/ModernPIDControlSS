@@ -1,6 +1,7 @@
 <component name="ProjectDictionaryState">
   <dictionary name="SomefunAgba">
     <words>
+      <w>agba</w>
       <w>arduino</w>
       <w>awup</w>
       <w>bilinear</w>
@@ -12,21 +13,33 @@
       <w>cplm</w>
       <w>cplmfc</w>
       <w>deadmax</w>
+      <w>denorm</w>
+      <w>denormalization</w>
       <w>discretization</w>
       <w>dobj</w>
       <w>dxdt</w>
+      <w>expbyones</w>
+      <w>expbysq</w>
       <w>fabs</w>
+      <w>fasta</w>
+      <w>fastexp</w>
       <w>inlen</w>
       <w>insize</w>
+      <w>isintegereven</w>
+      <w>isreverse</w>
       <w>knet</w>
+      <w>kpfit</w>
+      <w>kplya</w>
       <w>lambdad</w>
       <w>lambdai</w>
       <w>loopnum</w>
+      <w>lyapunov</w>
       <w>minorsky</w>
       <w>mkdocs</w>
       <w>modernpidcontrolss</w>
       <w>mult</w>
       <w>nlsig</w>
+      <w>normdenorm</w>
       <w>oluwasegun</w>
       <w>partxdiff</w>
       <w>partydiff</w>

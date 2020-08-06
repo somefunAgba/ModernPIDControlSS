@@ -3,7 +3,6 @@
 //
 
 #include "cpidlmfc.h"
-#include "nlsig.h"
 
 void tuneKd(PIDNet& Knet, double wn) {
     /* derivative time constant*/

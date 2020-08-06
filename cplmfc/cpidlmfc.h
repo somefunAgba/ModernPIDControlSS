@@ -12,7 +12,7 @@
 
 /* Include Files */
 #include <Arduino.h>
-#include "sfunPID.h"
+#include "pidkernel/sfunPID.h"
 
 /* Function Declarations */
 void tuneWn(PIDNet& Knet, double ts, double& wn);
