@@ -19,8 +19,8 @@
 class cplmfc{
 
 public:
-    void begin(PIDNet&, const int&, const int&);
-    void set_alpha_critics(PIDNet&, const float&, const float&, const float&);
+    void begin(PIDNet&, const int&, const int& = 0);
+    void set_alpha_critics(PIDNet&, const float&, const float& = 0.5F, const float& = 0.1F);
     void run(PIDNet&, const double&);
 
     void tuneWn(PIDNet&);

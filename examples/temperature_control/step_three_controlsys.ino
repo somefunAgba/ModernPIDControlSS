@@ -58,7 +58,7 @@ void setup() {
     /* CPLMFC Tuning HyperParameter Config. */
     /* Hyper-Parameter for Kp and Critic Weights */ // for P, I, D
     //TODO: increase alpha steadily to increase fast response;
-    //cplmfc_tuner.set_alpha_critics( PID_I, alpha, lambda_i, lambda_p)
+    //cplmfc_tuner.set_alpha_critics( PID_I, alpha, lambda_i, lambda_d)
     cplmfc_tuner.set_alpha_critics( PID_I,10.0,0.5,0.1);
 
     /* PID Commonsense Model Config. */

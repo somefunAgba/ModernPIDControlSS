@@ -2,6 +2,10 @@
 <img alt="ModernPIDControlSS" src="https://raw.githubusercontent.com/somefunAgba/ModernPIDControlSS/master/material/assets/images/function-variant.svg" width="150" />
 </a>
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-red.svg)](https://opensource.org/licenses/MIT)
+[![Generic badge](https://img.shields.io/badge/Arduino-PID-<COLOR>.svg)](https://shields.io/)
+
+
 **A Modern PID Control [Arduino](https://www.arduino.cc/) Library**
 
 <!--[![GitHub Action](https://github.com/somefunagba/ModernPIDControlSS/workflows/ci/badge.svg?branch=production)](https://github.com/somefunagba/ModernPIDControlSS/actions)-->
