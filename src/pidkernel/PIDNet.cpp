@@ -179,6 +179,15 @@ void PIDNet::compute(const double& t) {
     countseq += 1;
 
 }
+/**************************************************************************/
+/*!
+    @brief  Sets three parameters in the PID-control structure
+    @param b 2DOF-PID set-point weighting constant: 0 or 1
+    @param c 2DOF PID derivative weighting constant: 0 or 1
+    @param follow logic to enable set-point filtering: 0 or 1
+    @returns void.
+*/
+/**************************************************************************/
 void PIDNet::set_bc_follow(const int& b, const int& c, const char& follow) {
     this->b = b;
     this->c = c;

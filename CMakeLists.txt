@@ -17,4 +17,5 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/)
 set(${PROJECT_NAME}_AFLAGS -v)
 
 add_subdirectory(src)
-add_subdirectory(examples)
+add_subdirectory(examples/simulation_fopdt)
+add_subdirectory(examples/temperature_control)

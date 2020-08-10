@@ -19,7 +19,7 @@ begin	KEYWORD2
 run	KEYWORD2
 compute	KEYWORD2
 PID_kernelOS    KEYWORD2
-deadzone    KEYWORD2
+dead_zone    KEYWORD2
 testsys_ss	KEYWORD2
 
 #######################################

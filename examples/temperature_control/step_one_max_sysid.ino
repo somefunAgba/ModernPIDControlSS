@@ -5,7 +5,7 @@
 #include "Arduino.h"
 #include "Wire.h"
 #include "Adafruit_MCP4725.h"
-#include "Adafruit_MAX31865.h"
+#include "Adafruit_MAX31865_library/Adafruit_MAX31865.h"
 
 /* Global Declarations */
 
@@ -16,11 +16,11 @@ int max_discrete_time_count = 5000; // vary as desired
 int dt = 1000; // equivalent to 1 seconds
 
 // set max. control input
-const int umax = 4095;
+const int max_in = 10;
 
 // TODO: initialize other libraries for the DAC and ADC
 Adafruit_MCP4725 dac; // Adafruit MCP4725 dac
-thermo = Adafruit_MAX31865(10,11,12,13); // Adafruit MAX31865 PT100 adc
+Adafruit_MAX31865 thermo = Adafruit_MAX31865(10,11,12,13); // Adafruit MAX31865 PT100 adc
 
 void setup() {
     // Turn on Serial Comms.
@@ -45,8 +45,8 @@ void loop() {
         /* MAX-OUTPUT SYS ID- START */
         /* log the output every dt milli-secs  */
         if ( millis() - t_current >= dt) {
-            in_pwm = (umax/10.0)*10;
-            dac.setvoltage(in_pwm,"false"); // pass in max-input value to dac
+            in_pwm = (4095/10.0)*max_in;
+            dac.setVoltage(in_pwm,"false"); // pass in max-input value to dac
             out_celsius = thermo.temperature(100,430.0); // get the output temperature
             t_current = millis();
         }

@@ -1,11 +1,11 @@
 /*
- *  STEP1: IDENTIFY THE CLOSED-LOOP SETTLING-TIME OF THE OUTPUT
+ *  STEP2: IDENTIFY THE CLOSED-LOOP SETTLING-TIME OF THE OUTPUT
  *         GIVEN AN ERROR CONTROL INPUT TO THE SYSTEM
  */
 #include "Arduino.h"
 #include "Wire.h"
 #include "Adafruit_MCP4725.h"
-#include "Adafruit_MAX31865.h"
+#include <Adafruit_MAX31865_library/Adafruit_MAX31865.h>
 
 /* Global Declarations */
 
@@ -21,13 +21,19 @@ double t_prev_sys = -dt_sys;
 double t_start = 0;
 
 // set max. control input
-const int in_pwm_max = 10; // 10V, equivalent to 4095 PWM
+const int in_max = 10; // 10V, equivalent to 4095 PWM
 // set reference output celsius
 double ref_celsius = 0;
 
-// TODO: initialize other libraries for the DAC and ADC
+// input and output variables
+int in_pwm;
+double in_val;
+double out_celsius = 0;
+//TODO: fill with max output celsius value identified in step 1.
+double out_celsius_max = 100; // change this to the correct value
+// TODO: initialize libraries for the DAC and ADC, if not Adafruit dac and adc
 Adafruit_MCP4725 dac; // Adafruit MCP4725 dac
-thermo = Adafruit_MAX31865(10,11,12,13); // Adafruit MAX31865 PT100 adc
+Adafruit_MAX31865 thermo = Adafruit_MAX31865(10,11,12,13); // Adafruit MAX31865 PT100 adc
 
 void setup() {
     // Turn on Serial Comms.
@@ -41,11 +47,6 @@ void setup() {
 
 }
 
-// input and output variables
-double in_pwm = 0;
-double out_celsius = 0;
-//TODO: fill with max output celsius value identified in step 1.
-double out_celsius_max = 100; // change this to the correct value
 
 void loop() {
     // ensure notion of fixed sampling
@@ -60,12 +61,12 @@ void loop() {
                 ref_celsius = k*out_celsius_max;
                 out_celsius = out_celsius_max;
             }
-            in_pwm = (in_pwm_max/out_celsius_max)*(ref_celsius-out_celsius);
-            in_pwm = (4095/10)*in_pwm; // convert input voltage to pwm
+            in_val = (in_max/out_celsius_max)*(ref_celsius-out_celsius);
+            in_pwm = int((4095/10.0)*in_val); // convert input voltage to pwm
             t_prev_control = t;
         }
 
-        dac.setvoltage(in_pwm,"false"); // pass in max-input value to dac
+        dac.setVoltage(in_pwm,"false"); // pass in max-input value to dac
 
         /* SYSTEM OUTPUT SAMPLING-: EVERY DT_SYS SECONDS*/
         if ( t >= (t_prev_sys + dt_sys)) {
@@ -74,9 +75,9 @@ void loop() {
         }
 
         // display input_pwm, output_celsius and current discrete-time step.
-        // TODO: note down the countseq,
-        //  where the out_celsius becomes averagely steady
-        // this value becomes the N_ts value for the PID control tuning algorithm
+        //TODO: note down the countseq value,
+        //  where the out_celsius becomes averagely steady.
+        //  This value becomes the N_ts value for the PID control tuning algorithm
         Serial.print((String) in_pwm + ", celsius: " + out_celsius +
                 ", countseq: " + countseq);
         Serial.println(F("---\n"));

@@ -7,20 +7,44 @@
  */
 
 #include "cplmfc.h"
-
+/**************************************************************************/
+/*!
+    @brief Sets manually the hyper-parameters for the tuning algorithm
+    @param Knet The PID controller instance in the loop
+    @param alpha controls the proportional gain
+    @param lambda_i controls the integral-error output contribution
+    @param lambda_d controls the derivative-error output contribution
+    @returns void.
+*/
+/**************************************************************************/
 void cplmfc::set_alpha_critics(PIDNet& Knet, const float& alpha, const float& lambda_i, const float& lambda_d) {
     this->alpha = alpha;
     Knet.lambdai = lambda_i;
     Knet.lambdad = lambda_d;
 }
-
+/**************************************************************************/
+/*!
+    @brief Sets the closed-loop settling-time and bandwidth
+    @param Knet The PID controller instance in the loop
+    @param N_ts The discrete-time count for the settling-time of the output to be controlled
+    @param N_taul The discrete-time count for the input-output delay in the loop
+    @returns void.
+*/
+/**************************************************************************/
 void cplmfc::begin(PIDNet& Knet, const int& N_ts, const int& N_taul) {
     ts = N_ts*Knet.Ts;
     tau_l = float(N_taul*Knet.Ts);
     // Natural frequency = bandwidth
     tuneWn(Knet);
 }
-
+/**************************************************************************/
+/*!
+    @brief Runs the tuning algorithm
+    @param Knet The PID controller instance in the loop
+    @param t The current time
+    @returns void.
+*/
+/**************************************************************************/
 void cplmfc::run(PIDNet& Knet, const double& t) {
     filter_r.run(Knet.ym, Knet.r);
     // Serial.print("ym: "); Serial.println(PIDobj_I.ym);
