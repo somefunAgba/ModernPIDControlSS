@@ -299,29 +299,22 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a class="md-nav__link" href="#step-one">
-    STEP ONE
+  <a class="md-nav__link" href="#step-one-identify-the-maximum-value-of-the-output-to-be-controlled">
+    STEP ONE: IDENTIFY THE MAXIMUM VALUE OF THE OUTPUT TO BE CONTROLLED
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a class="md-nav__link" href="#step-two">
-    STEP TWO
+  <a class="md-nav__link" href="#step-two-closed-loop-input-output-settling-time">
+    STEP TWO: CLOSED-LOOP INPUT-OUTPUT SETTLING-TIME
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a class="md-nav__link" href="#settling-time-identification-loop">
-    Settling-Time Identification Loop
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a class="md-nav__link" href="#step-3">
-    STEP 3
+  <a class="md-nav__link" href="#step-3-implement-pid-control">
+    STEP 3: IMPLEMENT PID CONTROL
   </a>
   
 </li>
@@ -482,29 +475,22 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a class="md-nav__link" href="#step-one">
-    STEP ONE
+  <a class="md-nav__link" href="#step-one-identify-the-maximum-value-of-the-output-to-be-controlled">
+    STEP ONE: IDENTIFY THE MAXIMUM VALUE OF THE OUTPUT TO BE CONTROLLED
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a class="md-nav__link" href="#step-two">
-    STEP TWO
+  <a class="md-nav__link" href="#step-two-closed-loop-input-output-settling-time">
+    STEP TWO: CLOSED-LOOP INPUT-OUTPUT SETTLING-TIME
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a class="md-nav__link" href="#settling-time-identification-loop">
-    Settling-Time Identification Loop
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a class="md-nav__link" href="#step-3">
-    STEP 3
+  <a class="md-nav__link" href="#step-3-implement-pid-control">
+    STEP 3: IMPLEMENT PID CONTROL
   </a>
   
 </li>
@@ -543,18 +529,18 @@
 <div class="admonition abstract">
 <p class="admonition-title">Introduction</p>
 <p>Although, the concept and theory of the PID is considered established by many, yet still largely misunderstood. 
-It is sometimes rated as a simple and old control algorithm. Quite truly, the overview representation is simple, but its design is not so.  <br />
-From the lens of neuroscience and psychology, the PID law is the simplest representation of active inference or perceptual control in nature. 
-The PID law, actively tries to make inference to minimize the deviation of a perceived controllable behaviour from the expected behaviour. 
-In systems and control, this law is used as an algorithm for robust feedback control. It infers the necessary control input <span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span> to a dynamical system, to reach an achievable expected output <span><span class="MathJax_Preview">r</span><script type="math/tex">r</script></span> of the dynamical system 
-This means that the PID law is an artificial intelligence (AI) for inference. It represents the complex intelligence of inference in nature. 
-Notably, Nicolai Minorsky, who proposed the seminal theoretical representation of the PID realised this in the early nineties. 
+It is sometimes rated as a simple and old control algorithm. Quite truly, the overview representation is simple, but its design is not so.    </p>
+<p>From the lens of neuroscience and psychology, the PID law is the simplest representation of active inference or perceptual control in nature. 
+The PID law, actively tries to make inference to minimize the deviation of a perceived controllable behaviour from the expected behaviour. </p>
+<p>In systems and control, this law is used as an algorithm for robust feedback control. It infers the necessary control input <span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span> to a dynamical system, to reach an achievable expected output <span><span class="MathJax_Preview">r</span><script type="math/tex">r</script></span> of the dynamical system. 
+This means that the PID law is an artificial intelligence (AI) for inference. It represents the complex intelligence of inference in nature. </p>
+<p>Notably, Nicolai Minorsky, who proposed the seminal theoretical representation of the PID realised this in the early nineties. 
 An important design question is: a general framework for this AI architecture and its parameters for guaranteed stable inference (control).      <br />
 Two main problems in this AI exist. The representation, and the design of AI. Research in the control literature has mostly focused on the latter.</p>
 </div>
 <div class="admonition summary">
-<p class="admonition-title">Synopsis</p>
-<p>In this library, using modern control theory, we provide for practical use, a simple but robust realization of the PID law represented in critic form.
+<p class="admonition-title">Summary</p>
+<p>Using modern control and signal processing theory, this library provides for practical use, a simple but robust realization of the PID law represented in critic form.
 The features implemented are compactly listed in the <a href="../about/about/">about</a> page.
 The problem of automatic design of the PID law for control is approached from the viewpoint of the 'closed PID-loop model'.
 For a more technical understanding of this automatic tuning design, read the preprint at (<a href="https://arxiv.org/pdf/2006.00314">https://arxiv.org/pdf/2006.00314</a>). Also, please see the <a href="../about/license/">library license</a> for further details on library use.</p>
@@ -575,121 +561,331 @@ $$</p>
 <!--* `mkdocs -h` - Print help message and exit.-->
 
 <h2 id="usecase">Usecase<a class="headerlink" href="#usecase" title="Permanent link">&para;</a></h2>
-<p>The tuning method included in this library as default is the CPLMFC.
-The process is illustrated as shown:</p>
-<p><img alt="cplmfc_process" src="../img/cplmfc_overviewanimated.gif" /></p>
-<h3 id="step-one">STEP ONE<a class="headerlink" href="#step-one" title="Permanent link">&para;</a></h3>
+<p>The tuning method included in this library as default is the CPLMFC. 
+You can also use this library without using the tuner included (this usecase example will be added later).</p>
+<p>The usecase example  provides a general overview for using the library for control. It is divided into three steps. 
+The first two steps is to respectively obtain the maximum value of the output to be controlled and 
+obtain the discrete-time step the output settles to an average value.
+The last step uses information from the last two steps to run the automatic algorithm</p>
+<p>See the step illustrations below.</p>
+<p>The aim is to control the observed temperature using a system driven by a PWM input.</p>
+<h3 id="step-one-identify-the-maximum-value-of-the-output-to-be-controlled">STEP ONE: IDENTIFY THE MAXIMUM VALUE OF THE OUTPUT TO BE CONTROLLED<a class="headerlink" href="#step-one-identify-the-maximum-value-of-the-output-to-be-controlled" title="Permanent link">&para;</a></h3>
+<!-- ![cplmfc_TsID|150x150, 20%](img/idents_process_v2.png) -->
+
+<p><img  alt="clmfc_TsID" src="https://raw.githubusercontent.com/somefunAgba/ModernPIDControlSS/master/docs/img/idents_process_v2.png" width="500" /></p>
 <div class="tabbed-set" data-tabs="1:1"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><label for="__tabbed_1_1">C++</label><div class="tabbed-content"></div>
 </div>
-<div class="highlight"><pre><span></span><code><span class="cp">#include</span> <span class="cpf">&quot;Arduino.h&quot;</span><span class="cp"></span>
-<span class="cm">/* PID Library Include Files */</span>
-<span class="cp">#include</span> <span class="cpf">&quot;ModernPIDControlSS.h&quot;</span><span class="cp"></span>
+<div class="highlight"><pre><span></span><code><span class="cm">/*</span>
+<span class="cm"> *  STEP1: IDENTIFY THE MAXIMUM STEADY STATE OUTPUT OF THE SYSTEM</span>
+<span class="cm"> *         GIVEN THE MAXIMUM CONTROL INPUT TO THE SYSTEM</span>
+<span class="cm"> */</span>
+<span class="cp">#include</span> <span class="cpf">&quot;Arduino.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;Wire.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;Adafruit_MCP4725.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;Adafruit_MAX31865_library/Adafruit_MAX31865.h&quot;</span><span class="cp"></span>
 
 <span class="cm">/* Global Declarations */</span>
-<span class="cm">/* Tuning Parameters */</span>
-<span class="kt">double</span> <span class="n">wn</span><span class="p">;</span>
-<span class="kt">float</span> <span class="n">alpha</span><span class="p">;</span>
 
-<span class="cm">/* Timing Information */</span>
-<span class="kt">double</span> <span class="n">L</span><span class="p">;</span>
-<span class="kt">double</span> <span class="n">ts</span><span class="p">;</span>
-<span class="kt">double</span> <span class="n">dt</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">;</span>
-<span class="kt">double</span> <span class="n">t</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span>
+<span class="cm">/* timings */</span>
+<span class="kt">int</span> <span class="n">countseq</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// take note of this time-step variable</span>
+<span class="kt">double</span> <span class="n">t_current</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">max_discrete_time_count</span> <span class="o">=</span> <span class="mi">5000</span><span class="p">;</span> <span class="c1">// vary as desired</span>
+<span class="kt">int</span> <span class="n">dt</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">;</span> <span class="c1">// equivalent to 1 seconds</span>
 
-<span class="k">const</span> <span class="kt">double</span> <span class="n">r</span> <span class="o">=</span> <span class="mf">150.0</span><span class="p">;</span>
-<span class="kt">double</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="c1">// set max. control input</span>
+<span class="k">const</span> <span class="kt">int</span> <span class="n">max_in</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
 
-<span class="kt">int</span> <span class="n">countseq</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="c1">// TODO: initialize other libraries for the DAC and ADC</span>
+<span class="n">Adafruit_MCP4725</span> <span class="n">dac</span><span class="p">;</span> <span class="c1">// Adafruit MCP4725 dac</span>
+<span class="n">Adafruit_MAX31865</span> <span class="n">thermo</span> <span class="o">=</span> <span class="n">Adafruit_MAX31865</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">);</span> <span class="c1">// Adafruit MAX31865 PT100 adc</span>
 
-<span class="k">const</span> <span class="kt">int</span> <span class="n">umin</span> <span class="o">=</span> <span class="o">-</span><span class="mi">255</span><span class="p">;</span>
-<span class="k">const</span> <span class="kt">int</span> <span class="n">umax</span> <span class="o">=</span> <span class="mi">255</span><span class="p">;</span>
-<span class="k">const</span> <span class="kt">int</span> <span class="n">dead_max</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
-<span class="k">const</span> <span class="kt">int</span> <span class="n">dead_min</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span> <span class="c1">// zero tolerance limits</span>
-
-<span class="cm">/* Parameters PID Structure Config. */</span>
-<span class="n">PIDNet</span> <span class="nf">PIDobj_II</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">umax</span><span class="p">,</span> <span class="n">umin</span><span class="p">);</span>
-</code></pre></div>
-
-<h3 id="step-two">STEP TWO<a class="headerlink" href="#step-two" title="Permanent link">&para;</a></h3>
-<div class="tabbed-set" data-tabs="2:1"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><label for="__tabbed_2_1">C++</label><div class="tabbed-content"></div>
-</div>
-<div class="highlight"><pre><span></span><code><span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
+<span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
     <span class="c1">// Turn on Serial Comms.</span>
-    <span class="c1">// 9600 baud is a compromise setting for easy killing of a runaway process</span>
+    <span class="c1">// 9600 baud is a compromise setting between easy to kill a runaway process</span>
     <span class="c1">// and very slow process</span>
     <span class="n">Serial</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mi">9600</span><span class="p">);</span> <span class="c1">// Can Go Up to 2M</span>
-    <span class="n">PIDobj_II</span><span class="p">.</span><span class="n">Ts</span> <span class="o">=</span> <span class="n">dt</span><span class="p">;</span>
-    <span class="cm">/* Parameters PID Structure Config. */</span>
-    <span class="n">PIDobj_II</span><span class="p">.</span><span class="n">b</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// optional</span>
-    <span class="n">PIDobj_II</span><span class="p">.</span><span class="n">c</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// optional</span>
-    <span class="n">PIDobj_II</span><span class="p">.</span><span class="n">follow</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// optional</span>
 
+    <span class="c1">//TODO: setup DAC and ADC</span>
+    <span class="n">dac</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mh">0x62</span><span class="p">);</span> <span class="c1">// Adafruit MCP4725A1 library</span>
+    <span class="n">thermo</span><span class="p">.</span><span class="n">readRTD</span><span class="p">();</span> <span class="c1">// Adafruit MAX31865 library</span>
+<span class="p">}</span>
 
-    <span class="cm">/* CPLMFC Tuning HyperParameter Config. */</span>
-    <span class="kt">int</span> <span class="n">Nts</span> <span class="o">=</span> <span class="mi">228</span><span class="p">;</span> <span class="c1">// settling horizon: set after settling-time identification</span>
-    <span class="n">ts</span> <span class="o">=</span> <span class="n">Nts</span><span class="o">*</span><span class="n">dt</span><span class="p">;</span> <span class="c1">// settling time (including delay time)</span>
-    <span class="n">L</span> <span class="o">=</span> <span class="mi">0</span><span class="o">*</span><span class="n">dt</span><span class="p">;</span> <span class="c1">// estimated transport or delay time</span>
-    <span class="cm">/* Hyper-Parameter for Kp and Critic Weights */</span>
-    <span class="n">alpha</span> <span class="o">=</span> <span class="mf">20.0</span><span class="p">;</span> <span class="c1">//  for P</span>
-    <span class="c1">// for D</span>
-    <span class="n">PIDobj_II</span><span class="p">.</span><span class="n">lambdad</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">;</span>
-    <span class="c1">// I</span>
-    <span class="n">PIDobj_II</span><span class="p">.</span><span class="n">lambdai</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">;</span>
+<span class="c1">// input and output variables</span>
+<span class="kt">double</span> <span class="n">in_pwm</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kt">double</span> <span class="n">out_celsius</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 
-    <span class="cm">/* PID Commonsense Model Config. */</span>
-    <span class="cm">/* Natural Frequency for PID Commonsense */</span>
-    <span class="n">tuneWn</span><span class="p">(</span><span class="n">PIDobj_II</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">wn</span><span class="p">);</span>
-    <span class="c1">//Serial.println(wn);// debug</span>
+<span class="kt">void</span> <span class="nf">loop</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// ensure notion of fixed sampling</span>
+    <span class="n">t_current</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+    <span class="k">while</span> <span class="p">(</span><span class="n">countseq</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="cm">/* MAX-OUTPUT SYS ID- START */</span>
+        <span class="cm">/* log the output every dt milli-secs  */</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="n">millis</span><span class="p">()</span> <span class="o">-</span> <span class="n">t_current</span> <span class="o">&gt;=</span> <span class="n">dt</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">in_pwm</span> <span class="o">=</span> <span class="p">(</span><span class="mi">4095</span><span class="o">/</span><span class="mf">10.0</span><span class="p">)</span><span class="o">*</span><span class="n">max_in</span><span class="p">;</span>
+            <span class="n">dac</span><span class="p">.</span><span class="n">setVoltage</span><span class="p">(</span><span class="n">in_pwm</span><span class="p">,</span><span class="s">&quot;false&quot;</span><span class="p">);</span> <span class="c1">// pass in max-input value to dac</span>
+            <span class="n">out_celsius</span> <span class="o">=</span> <span class="n">thermo</span><span class="p">.</span><span class="n">temperature</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mf">430.0</span><span class="p">);</span> <span class="c1">// get the output temperature</span>
+            <span class="n">t_current</span> <span class="o">=</span> <span class="n">millis</span><span class="p">();</span>
+        <span class="p">}</span>
+
+        <span class="c1">// display input_pwm, output_celsius and current discrete-time step.</span>
+        <span class="c1">// TODO: note down the maximum value</span>
+        <span class="c1">//  where the out_celsius becomes averagely steady</span>
+        <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">((</span><span class="n">String</span><span class="p">)</span> <span class="n">in_pwm</span> <span class="o">+</span> <span class="s">&quot;, celsius: &quot;</span> <span class="o">+</span> <span class="n">out_celsius</span> <span class="o">+</span>
+                    <span class="s">&quot;, countseq: &quot;</span> <span class="o">+</span> <span class="n">countseq</span><span class="p">);</span>
+        <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;---</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">));</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">countseq</span> <span class="o">&gt;=</span> <span class="n">max_discrete_time_count</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">countseq</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="n">countseq</span><span class="o">++</span><span class="p">;</span>
+
+    <span class="p">}</span>
+
 <span class="p">}</span>
 </code></pre></div>
 
-<h3 id="settling-time-identification-loop">Settling-Time Identification Loop<a class="headerlink" href="#settling-time-identification-loop" title="Permanent link">&para;</a></h3>
+<h3 id="step-two-closed-loop-input-output-settling-time">STEP TWO: CLOSED-LOOP INPUT-OUTPUT SETTLING-TIME<a class="headerlink" href="#step-two-closed-loop-input-output-settling-time" title="Permanent link">&para;</a></h3>
+<div class="tabbed-set" data-tabs="2:1"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><label for="__tabbed_2_1">C++</label><div class="tabbed-content"></div>
+</div>
+<div class="highlight"><pre><span></span><code><span class="cm">/*</span>
+<span class="cm"> *  STEP2: IDENTIFY THE CLOSED-LOOP SETTLING-TIME OF THE OUTPUT</span>
+<span class="cm"> *         GIVEN AN ERROR CONTROL INPUT TO THE SYSTEM</span>
+<span class="cm"> */</span>
+<span class="cp">#include</span> <span class="cpf">&quot;Arduino.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;Wire.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;Adafruit_MCP4725.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;Adafruit_MAX31865_library/Adafruit_MAX31865.h&gt;</span><span class="cp"></span>
+
+<span class="cm">/* Global Declarations */</span>
+
+<span class="cm">/* timings */</span>
+<span class="kt">int</span> <span class="n">countseq</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// take note of this time-step variable</span>
+<span class="kt">int</span> <span class="n">max_discrete_time_count</span> <span class="o">=</span> <span class="mi">5000</span><span class="p">;</span> <span class="c1">// vary as desired</span>
+
+<span class="kt">double</span> <span class="n">t</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kt">double</span> <span class="n">dt_control</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">;</span> <span class="c1">// control sampling-time; you can play with this as desired</span>
+<span class="kt">double</span> <span class="n">t_prev_control</span> <span class="o">=</span> <span class="o">-</span><span class="n">dt_control</span><span class="p">;</span>
+<span class="kt">double</span> <span class="n">dt_sys</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">;</span> <span class="c1">// equivalent to 1 seconds</span>
+<span class="kt">double</span> <span class="n">t_prev_sys</span> <span class="o">=</span> <span class="o">-</span><span class="n">dt_sys</span><span class="p">;</span>
+<span class="kt">double</span> <span class="n">t_start</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="c1">// set max. control input</span>
+<span class="k">const</span> <span class="kt">int</span> <span class="n">in_max</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span> <span class="c1">// 10V, equivalent to 4095 PWM</span>
+<span class="c1">// set reference output celsius</span>
+<span class="kt">double</span> <span class="n">ref_celsius</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="c1">// input and output variables</span>
+<span class="kt">int</span> <span class="n">in_pwm</span><span class="p">;</span>
+<span class="kt">double</span> <span class="n">in_val</span><span class="p">;</span>
+<span class="kt">double</span> <span class="n">out_celsius</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="c1">//TODO: fill with max output celsius value identified in step 1.</span>
+<span class="kt">double</span> <span class="n">out_celsius_max</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span> <span class="c1">// change this to the correct value</span>
+<span class="c1">// TODO: initialize libraries for the DAC and ADC, if not Adafruit dac and adc</span>
+<span class="n">Adafruit_MCP4725</span> <span class="n">dac</span><span class="p">;</span> <span class="c1">// Adafruit MCP4725 dac</span>
+<span class="n">Adafruit_MAX31865</span> <span class="n">thermo</span> <span class="o">=</span> <span class="n">Adafruit_MAX31865</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">);</span> <span class="c1">// Adafruit MAX31865 PT100 adc</span>
+
+<span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// Turn on Serial Comms.</span>
+    <span class="c1">// 9600 baud is a compromise setting between easy to kill a runaway process</span>
+    <span class="c1">// and very slow process</span>
+    <span class="n">Serial</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mi">9600</span><span class="p">);</span> <span class="c1">// Can Go Up to 2M</span>
+
+    <span class="c1">//TODO: setup DAC and ADC</span>
+    <span class="n">dac</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mh">0x62</span><span class="p">);</span> <span class="c1">// Adafruit MCP4725A1 library</span>
+    <span class="n">thermo</span><span class="p">.</span><span class="n">readRTD</span><span class="p">();</span> <span class="c1">// Adafruit MAX31865 library</span>
+
+<span class="p">}</span>
+
+
+<span class="kt">void</span> <span class="nf">loop</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// ensure notion of fixed sampling</span>
+    <span class="n">t_start</span> <span class="o">=</span> <span class="n">millis</span><span class="p">()</span><span class="o">/</span><span class="mf">1000.0</span><span class="p">;</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">t_start</span><span class="p">;</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">countseq</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">t</span> <span class="o">-</span> <span class="n">t_start</span><span class="p">;</span>
+        <span class="cm">/* CLOSED-LOOP N_TS SYS ID- START */</span>
+        <span class="k">if</span><span class="p">(</span> <span class="n">t</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="n">t_prev_control</span> <span class="o">+</span> <span class="n">dt_control</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">dt_control</span><span class="p">))</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">countseq</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+                <span class="kt">double</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// can vary between 0.5 and 1</span>
+                <span class="n">ref_celsius</span> <span class="o">=</span> <span class="n">k</span><span class="o">*</span><span class="n">out_celsius_max</span><span class="p">;</span>
+                <span class="n">out_celsius</span> <span class="o">=</span> <span class="n">out_celsius_max</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="n">in_val</span> <span class="o">=</span> <span class="p">(</span><span class="n">in_max</span><span class="o">/</span><span class="n">out_celsius_max</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">ref_celsius</span><span class="o">-</span><span class="n">out_celsius</span><span class="p">);</span>
+            <span class="n">in_pwm</span> <span class="o">=</span> <span class="kt">int</span><span class="p">((</span><span class="mi">4095</span><span class="o">/</span><span class="mf">10.0</span><span class="p">)</span><span class="o">*</span><span class="n">in_val</span><span class="p">);</span> <span class="c1">// convert input voltage to pwm</span>
+            <span class="n">t_prev_control</span> <span class="o">=</span> <span class="n">t</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="n">dac</span><span class="p">.</span><span class="n">setVoltage</span><span class="p">(</span><span class="n">in_pwm</span><span class="p">,</span><span class="s">&quot;false&quot;</span><span class="p">);</span> <span class="c1">// pass in max-input value to dac</span>
+
+        <span class="cm">/* SYSTEM OUTPUT SAMPLING-: EVERY DT_SYS SECONDS*/</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="n">t</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="n">t_prev_sys</span> <span class="o">+</span> <span class="n">dt_sys</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">out_celsius</span> <span class="o">=</span> <span class="n">thermo</span><span class="p">.</span><span class="n">temperature</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mf">430.0</span><span class="p">);</span> <span class="c1">// get the output temperature</span>
+            <span class="n">t_prev_sys</span> <span class="o">=</span> <span class="n">t</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="c1">// display input_pwm, output_celsius and current discrete-time step.</span>
+        <span class="c1">//TODO: note down the countseq value,</span>
+        <span class="c1">//  where the out_celsius becomes averagely steady.</span>
+        <span class="c1">//  This value becomes the N_ts value for the PID control tuning algorithm</span>
+        <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">((</span><span class="n">String</span><span class="p">)</span> <span class="n">in_pwm</span> <span class="o">+</span> <span class="s">&quot;, celsius: &quot;</span> <span class="o">+</span> <span class="n">out_celsius</span> <span class="o">+</span>
+                <span class="s">&quot;, countseq: &quot;</span> <span class="o">+</span> <span class="n">countseq</span><span class="p">);</span>
+        <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;---</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">));</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">countseq</span> <span class="o">&gt;=</span> <span class="n">max_discrete_time_count</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">countseq</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="n">countseq</span><span class="o">++</span><span class="p">;</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">millis</span><span class="p">()</span><span class="o">/</span><span class="mf">1000.0</span><span class="p">;</span>
+
+    <span class="p">}</span>
+
+<span class="p">}</span>
+</code></pre></div>
+
+<h3 id="step-3-implement-pid-control">STEP 3: IMPLEMENT PID CONTROL<a class="headerlink" href="#step-3-implement-pid-control" title="Permanent link">&para;</a></h3>
+<p><img  alt="clmfc_overview" src="https://raw.githubusercontent.com/somefunAgba/ModernPIDControlSS/master/docs/img/cplmfc_overview.png" width="500" /></p>
 <div class="tabbed-set" data-tabs="3:1"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><label for="__tabbed_3_1">C++</label><div class="tabbed-content"></div>
 </div>
-<div class="highlight"><pre><span></span><code>        <span class="p">...</span>
-        <span class="cm">/* SYS ID- START */</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">sys_id</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">countseq</span><span class="o">==</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-                <span class="n">ref_id</span> <span class="o">=</span> <span class="mi">1</span><span class="o">*</span><span class="mi">255</span><span class="p">;</span>
-                <span class="n">PIDobj_II</span><span class="p">.</span><span class="n">y</span> <span class="o">=</span> <span class="mi">1</span><span class="o">*</span><span class="mi">255</span><span class="p">;</span>
-            <span class="p">}</span>
-            <span class="n">PIDobj_II</span><span class="p">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">ref_id</span> <span class="o">-</span> <span class="n">PIDobj_II</span><span class="p">.</span><span class="n">y</span><span class="p">;</span> <span class="c1">// SYS ID- END</span>
+<div class="highlight"><pre><span></span><code><span class="cm">/*</span>
+<span class="cm"> *  STEP3: CLOSED-LOOP CONTROL OF THE OUTPUT-TEMPERATURE</span>
+<span class="cm"> *         USING A PID-CONTROL PWM INPUT TO THE SYSTEM</span>
+<span class="cm"> */</span>
+<span class="cp">#include</span> <span class="cpf">&quot;Arduino.h&quot;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;Wire.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;Adafruit_MCP4725.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;Adafruit_MAX31865_library/Adafruit_MAX31865.h&quot;</span><span class="cp"></span>
+
+<span class="cm">/*PID Library*/</span>
+<span class="cp">#include</span> <span class="cpf">&quot;ModernPIDControlSS.h&quot;</span><span class="cp"></span>
+
+<span class="cm">/* Global Declarations */</span>
+
+<span class="cm">/* timings */</span>
+<span class="kt">int</span> <span class="n">countseq</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// take note of this time-step variable</span>
+<span class="kt">int</span> <span class="n">max_discrete_time_count</span> <span class="o">=</span> <span class="mi">5000</span><span class="p">;</span> <span class="c1">// vary as desired</span>
+
+<span class="kt">double</span> <span class="n">t</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kt">double</span> <span class="n">dt_control</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">;</span> <span class="c1">// control sampling-time; you can play with this as desired</span>
+<span class="kt">double</span> <span class="n">dt_sys</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">;</span> <span class="c1">// equivalent to 1 seconds</span>
+<span class="kt">double</span> <span class="n">t_prev_sys</span> <span class="o">=</span> <span class="o">-</span><span class="n">dt_sys</span><span class="p">;</span>
+<span class="kt">double</span> <span class="n">t_start</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+
+<span class="c1">// set reference output celsius</span>
+<span class="kt">double</span> <span class="n">ref_celsius</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="c1">// input and output variables</span>
+<span class="kt">int</span> <span class="n">in_pwm</span><span class="p">;</span>
+<span class="kt">double</span> <span class="n">in_val</span><span class="p">;</span>
+<span class="kt">double</span> <span class="n">out_celsius</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="c1">// TODO: initialize other libraries for the DAC and ADC</span>
+<span class="n">Adafruit_MCP4725</span> <span class="n">dac</span><span class="p">;</span> <span class="c1">// Adafruit MCP4725 dac</span>
+<span class="n">Adafruit_MAX31865</span> <span class="n">thermo</span> <span class="o">=</span> <span class="n">Adafruit_MAX31865</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">12</span><span class="p">,</span><span class="mi">13</span><span class="p">);</span> <span class="c1">// Adafruit MAX31865 PT100 adc</span>
+
+
+<span class="cm">/* Parameters PID Structure Config. */</span>
+<span class="c1">// 10 -&gt; max control input, 0 -&gt; min control input in voltage</span>
+<span class="n">PIDNet</span>  <span class="nf">PID_I</span><span class="p">(</span><span class="n">ref_celsius</span><span class="p">,</span> <span class="n">out_celsius</span><span class="p">,</span> <span class="n">dt_control</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="n">cplmfc</span> <span class="n">cplmfc_tuner</span><span class="p">;</span>
+
+
+<span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// Turn on Serial Comms.</span>
+    <span class="c1">// 9600 baud is a compromise setting between easy to kill a runaway process</span>
+    <span class="c1">// and very slow process</span>
+    <span class="n">Serial</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mi">9600</span><span class="p">);</span> <span class="c1">// Can Go Up to 2M</span>
+
+    <span class="c1">//TODO: setup DAC and ADC</span>
+    <span class="n">dac</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span><span class="mh">0x62</span><span class="p">);</span> <span class="c1">// Adafruit MCP4725A1 library</span>
+    <span class="n">thermo</span><span class="p">.</span><span class="n">readRTD</span><span class="p">();</span> <span class="c1">// Adafruit MAX31865 library</span>
+
+    <span class="cm">/* Parameters PID Structure Config. */</span>
+     <span class="n">PID_I</span><span class="p">.</span><span class="n">set_bc_follow</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+
+    <span class="cm">/* CPLMFC Tuning HyperParameter Config. */</span>
+    <span class="cm">/* Hyper-Parameter for Kp and Critic Weights */</span> <span class="c1">// for P, I, D</span>
+    <span class="c1">//TODO: increase alpha steadily to increase fast response;</span>
+    <span class="c1">//cplmfc_tuner.set_alpha_critics( PID_I, alpha, lambda_i, lambda_p)</span>
+    <span class="n">cplmfc_tuner</span><span class="p">.</span><span class="n">set_alpha_critics</span><span class="p">(</span> <span class="n">PID_I</span><span class="p">,</span><span class="mf">10.0</span><span class="p">,</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.1</span><span class="p">);</span>
+
+    <span class="cm">/* PID Commonsense Model Config. */</span>
+    <span class="c1">// note: if the sampling-time is changed</span>
+    <span class="c1">// rerun the closed-loop settling-time identification</span>
+    <span class="c1">// to get the correct N_ts and N_tau_l</span>
+    <span class="c1">// TODO: replace with identified settling-time count from step 2</span>
+    <span class="kt">int</span> <span class="n">N_ts</span> <span class="o">=</span> <span class="mi">228</span><span class="p">;</span> <span class="c1">// N_ts at 0.1secs;</span>
+    <span class="c1">// TODO: replace with identified delay-time count</span>
+    <span class="c1">//  (that is: maximum time-step at which output = 0)</span>
+    <span class="kt">int</span> <span class="n">N_tau_l</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="c1">//cplmfc_tuner.begin( PID_I, N_ts, N_tau_l);</span>
+    <span class="n">cplmfc_tuner</span><span class="p">.</span><span class="n">begin</span><span class="p">(</span> <span class="n">PID_I</span><span class="p">,</span> <span class="n">N_ts</span><span class="p">,</span> <span class="n">N_tau_l</span><span class="p">);</span>
+
+<span class="p">}</span>
+
+
+<span class="kt">void</span> <span class="nf">loop</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// ensure notion of fixed sampling</span>
+    <span class="n">t_start</span> <span class="o">=</span> <span class="n">millis</span><span class="p">()</span><span class="o">/</span><span class="mf">1000.0</span><span class="p">;</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">t_start</span><span class="p">;</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">countseq</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">t</span> <span class="o">-</span> <span class="n">t_start</span><span class="p">;</span>
+        <span class="cm">/* CLOSED-LOOP START */</span>
+        <span class="k">if</span><span class="p">(</span> <span class="n">t</span> <span class="o">&gt;=</span> <span class="p">(</span> <span class="n">PID_I</span><span class="p">.</span><span class="n">T_prev</span> <span class="o">+</span>  <span class="n">PID_I</span><span class="p">.</span><span class="n">Ts</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span> <span class="n">PID_I</span><span class="p">.</span><span class="n">Ts</span><span class="p">))</span> <span class="p">{</span>
+            <span class="c1">// Run the PID and its tuning algorithm     </span>
+            <span class="n">PID_kernelOS</span><span class="p">(</span> <span class="n">PID_I</span><span class="p">,</span> <span class="n">cplmfc_tuner</span><span class="p">,</span> <span class="n">t</span><span class="p">);</span>
+            <span class="n">in_val</span> <span class="o">=</span>  <span class="n">PID_I</span><span class="p">.</span><span class="n">u</span><span class="p">;</span>
+            <span class="n">in_pwm</span> <span class="o">=</span> <span class="kt">int</span><span class="p">((</span><span class="mi">4095</span><span class="o">/</span><span class="mf">10.0</span><span class="p">)</span><span class="o">*</span><span class="n">in_val</span><span class="p">);</span> <span class="c1">// convert input voltage to pwm</span>
         <span class="p">}</span>
-        <span class="p">...</span>
-</code></pre></div>
 
-<h3 id="step-3">STEP 3<a class="headerlink" href="#step-3" title="Permanent link">&para;</a></h3>
-<div class="tabbed-set" data-tabs="4:1"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><label for="__tabbed_4_1">C++</label><div class="tabbed-content"></div>
-</div>
-<div class="highlight"><pre><span></span><code>    <span class="p">...</span>
-    <span class="n">tstart</span> <span class="o">=</span> <span class="n">micros</span><span class="p">()</span><span class="o">/</span><span class="kt">double</span><span class="p">(</span><span class="mi">1000000</span><span class="p">);</span>
-    <span class="n">t</span> <span class="o">=</span> <span class="n">t</span> <span class="o">-</span> <span class="n">tstart</span><span class="p">;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">t</span> <span class="o">&gt;=</span><span class="p">(</span> <span class="p">(</span><span class="n">PIDobj_II</span><span class="p">.</span><span class="n">T_prev</span><span class="o">+</span><span class="n">PIDobj_II</span><span class="p">.</span><span class="n">Ts</span><span class="p">)</span><span class="o">-</span><span class="p">(</span><span class="mf">0.5</span><span class="o">*</span><span class="n">PIDobj_II</span><span class="p">.</span><span class="n">Ts</span><span class="p">)</span> <span class="p">))</span> <span class="p">{</span>
+        <span class="n">dac</span><span class="p">.</span><span class="n">setVoltage</span><span class="p">(</span><span class="n">in_pwm</span><span class="p">,</span><span class="s">&quot;false&quot;</span><span class="p">);</span> <span class="c1">// pass in max-input value to dac</span>
 
-        <span class="cm">/* CPLM Evolution */</span>
-        <span class="n">cplm_kernel</span><span class="p">(</span><span class="n">PIDobj_II</span><span class="p">.</span><span class="n">ym</span><span class="p">,</span> <span class="n">PIDobj_II</span><span class="p">.</span><span class="n">xm</span><span class="p">,</span> <span class="n">PIDobj_II</span><span class="p">.</span><span class="n">r</span><span class="p">,</span>
-               <span class="n">PIDobj_II</span><span class="p">.</span><span class="n">Ts</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wn</span><span class="p">);</span>
-        <span class="c1">// Serial.print(&quot;ym: &quot;); Serial.println(PIDobj_II.ym);</span>
-        <span class="cm">/* CPLMFC Tuning Computation */</span>
-        <span class="n">tuneKp</span><span class="p">(</span><span class="n">PIDobj_II</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
-        <span class="c1">//Serial.print(&quot;Kp: &quot;);Serial.println(PIDobj_II.Kp);</span>
+        <span class="cm">/* SYSTEM OUTPUT SAMPLING-: EVERY DT_SYS SECONDS*/</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="n">t</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="n">t_prev_sys</span> <span class="o">+</span> <span class="n">dt_sys</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">out_celsius</span> <span class="o">=</span> <span class="n">thermo</span><span class="p">.</span><span class="n">temperature</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mf">430.0</span><span class="p">);</span> <span class="c1">// get the output temperature</span>
+             <span class="n">PID_I</span><span class="p">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">out_celsius</span><span class="p">;</span>
+            <span class="n">t_prev_sys</span> <span class="o">=</span> <span class="n">t</span><span class="p">;</span>
+        <span class="p">}</span>
 
-        <span class="n">tuneKi</span><span class="p">(</span><span class="n">PIDobj_II</span><span class="p">,</span> <span class="n">wn</span><span class="p">);</span>
-        <span class="c1">//Serial.print(&quot; Ki: &quot;);Serial.print(PIDobj_II.Ki);</span>
 
-        <span class="n">tuneKd</span><span class="p">(</span><span class="n">PIDobj_II</span><span class="p">,</span> <span class="n">wn</span><span class="p">);</span>
-        <span class="c1">//Serial.print(&quot; Kd: &quot;);Serial.println(PIDobj_II.Kd);</span>
+        <span class="c1">// display input_pwm, output_celsius and current discrete-time step.</span>
+        <span class="c1">// observe the values</span>
+        <span class="n">Serial</span><span class="p">.</span><span class="n">print</span><span class="p">((</span><span class="n">String</span><span class="p">)</span> <span class="n">in_pwm</span> <span class="o">+</span> <span class="s">&quot;, celsius: &quot;</span> <span class="o">+</span> <span class="n">out_celsius</span> <span class="o">+</span>
+                <span class="s">&quot;, countseq: &quot;</span> <span class="o">+</span> <span class="n">countseq</span><span class="p">);</span>
+        <span class="n">Serial</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="s">&quot;---</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">));</span>
 
-        <span class="cm">/* PID Control State Evolution: Architecture */</span>
-        <span class="n">sfunPID_kernel</span><span class="p">(</span><span class="n">PIDobj_II</span><span class="p">,</span> <span class="n">t</span><span class="p">);</span>
-        <span class="c1">//Serial.print(&quot;upwm_II: &quot;); Serial.println(PIDobj_II.u);</span>
+        <span class="n">countseq</span><span class="o">++</span><span class="p">;</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">millis</span><span class="p">()</span><span class="o">/</span><span class="mf">1000.0</span><span class="p">;</span>
+
     <span class="p">}</span>
-    <span class="n">t</span> <span class="o">=</span> <span class="n">micros</span><span class="p">()</span><span class="o">/</span><span class="kt">double</span><span class="p">(</span><span class="mi">1000000</span><span class="p">);</span>
-    <span class="p">...</span>
+
+<span class="p">}</span>
 </code></pre></div>
 
+<p>The identified settling-time is set with this line
+<div class="highlight"><pre><span></span><code>    ...
+    //cplmfc_tuner.begin( PID_I, N_ts, N_tau_l);
+    cplmfc_tuner.begin( PID_I, N_ts, N_tau_l);
+    ...
+</code></pre></div>
+<span><span class="MathJax_Preview">N_{ts}</span><script type="math/tex">N_{ts}</script></span> is the discrete settling-time count. 
+<span><span class="MathJax_Preview">N_{tau_{l}}</span><script type="math/tex">N_{tau_{l}}</script></span> = 0 by default, is the discrete delay-time count when there is no change in output with respect to the input</p>
+<p>Tuning performance is varied with this line in the set-up.
+<div class="highlight"><pre><span></span><code>    ...
+    //cplmfc_tuner.set_alpha_critics( PID_I, alpha, lambda_i, lambda_d)
+    cplmfc_tuner.set_alpha_critics( PID_I,10.0,0.5,0.1);
+    ...
+</code></pre></div></p>
+<p>It manually configures the main tuner hyper-parameter: <span><span class="MathJax_Preview">\alpha</span><script type="math/tex">\alpha</script></span>, 
+and the critic weights: <span><span class="MathJax_Preview">\lambda_i</span><script type="math/tex">\lambda_i</script></span> = 0.5 by default and <span><span class="MathJax_Preview">\lambda_d</span><script type="math/tex">\lambda_d</script></span> = 0.1 by default</p>
+<p>The <span><span class="MathJax_Preview">\alpha</span><script type="math/tex">\alpha</script></span> constant is meant to gradually increased or reduced till you get a satisfactory response speed</p>
+<p>If needed, vary the critic weight <span><span class="MathJax_Preview">\lambda_i</span><script type="math/tex">\lambda_i</script></span> to reduce overshoot or reduce steady-state error =&gt; min:0, max: 1.0</p>
+<p>If needed, reduce the critic weight <span><span class="MathJax_Preview">\lambda_d</span><script type="math/tex">\lambda_d</script></span> to reduce oscillatory response, if any =&gt; min: 0, max: 1.0</p>
 <h2 id="notice">Notice<a class="headerlink" href="#notice" title="Permanent link">&para;</a></h2>
-<p>Please, this Guide is still in a draft (beta) state. It will be updated gradually.</p>
+<p>Please, this guide is still in a beta state. It will be updated gradually.</p>
 <div class="admonition faq">
 <p class="admonition-title">Faq</p>
 <p>Please, feel free to contact me at <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#111;&#97;&#115;&#111;&#109;&#101;&#102;&#117;&#110;&#64;&#102;&#117;&#116;&#97;&#46;&#101;&#100;&#117;&#46;&#110;&#103;">&#111;&#97;&#115;&#111;&#109;&#101;&#102;&#117;&#110;&#64;&#102;&#117;&#116;&#97;&#46;&#101;&#100;&#117;&#46;&#110;&#103;</a> for any questions or to report any bug.</p>
@@ -709,7 +905,7 @@ The process is illustrated as shown:</p>
 <div class="md-source-date">
   <small>
     
-      Last update: June 8, 2020
+      Last update: August 10, 2020
     
   </small>
 </div>
