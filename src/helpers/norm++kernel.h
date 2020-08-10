@@ -2,11 +2,11 @@
 // Created by SomefunAgba on 6/13/2020.
 //
 
-#ifndef MODERNPIDCONTROLSS_NORM_DENORM_KERNEL_H
-#define MODERNPIDCONTROLSS_NORM_DENORM_KERNEL_H
+#ifndef MODERNPIDCONTROLSS_NORMS++_KERNEL_H
+#define MODERNPIDCONTROLSS_NORMS++_KERNEL_H
 
 //
-// File: norm_denorm_kernel.h
+// File: norms++kernel.h
 // C/C++ source code created on  : 13-Jun-2020 09:37:47
 //
 
@@ -62,4 +62,4 @@ void denormalize(const T (&x_n)[N], T* x, const T& max, const T& min) noexcept {
     }
 }
 
-#endif //MODERNPIDCONTROLSS_NORM_DENORM_KERNEL_H
+#endif //MODERNPIDCONTROLSS_NORM++_KERNEL_H

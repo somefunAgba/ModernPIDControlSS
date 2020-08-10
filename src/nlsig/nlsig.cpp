@@ -23,7 +23,7 @@
  *						   or reverse (1) sigmoid
  *
  */
-void nlsig(double& y, double& dy_dx, double x, double xmax, double xmin, double ymax, double ymin,
+void nlsig(double& y, const double& x, double xmax, double xmin, double ymax, double ymin,
 			const int n, const double lambda, int safety, const unsigned char isreverse) {
 
 // Obtain length of input:
@@ -60,7 +60,7 @@ int c;
 	dx =(xmax-xmin)/N;
     
 	y = ymin;
-	dy_dx =0; 
+	//dy_dx =0;
     
 	// logistic rate
     alpha = lambda * (2/dx);
@@ -74,15 +74,15 @@ int c;
 		// partial output
 		u = c*alpha*(x-delta_i[id]);
 		v_i[id] = dy/(1+exp(u));
-		//v_i[id] = dy/(1+expbyones<double>(u)); // fast approximation
+		//v_i[id] = dy/(1+exp_by_ones<double>(u)); // fast approximation
 		
 		// output and derivative
 		y = y + v_i[id];
-		dy_dx = dy_dx + ( v_i[id]*(dy - v_i[id]) );
+		//dy_dx = dy_dx + ( v_i[id]*(dy - v_i[id]) );
     }
 	
-	y = y + 0;
-	dy_dx = tau * dy_dx;
+	y = y + 0.0;
+	//dy_dx = tau * dy_dx;
 
     // Serial.print("y: "); Serial.println(y);
 	// Serial.print("dydx: "); Serial.println(dy_dx);

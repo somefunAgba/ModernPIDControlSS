@@ -18,11 +18,13 @@
       <w>discretization</w>
       <w>dobj</w>
       <w>dxdt</w>
+      <w>dynsys</w>
       <w>expbyones</w>
       <w>expbysq</w>
       <w>fabs</w>
       <w>fasta</w>
       <w>fastexp</w>
+      <w>filterfo</w>
       <w>inlen</w>
       <w>insize</w>
       <w>isintegereven</w>
@@ -47,10 +49,12 @@
       <w>sfun</w>
       <w>sfunpid</w>
       <w>somefun</w>
+      <w>somefun's</w>
       <w>somefunagba</w>
       <w>stddef</w>
       <w>stdint</w>
       <w>sysid</w>
+      <w>taul</w>
       <w>testsys</w>
       <w>timeago</w>
       <w>tprev</w>
@@ -64,6 +68,7 @@
       <w>xmdot</w>
       <w>xmin</w>
       <w>xnoise</w>
+      <w>xtsn</w>
       <w>yfict</w>
       <w>ymax</w>
       <w>ymin</w>

@@ -6,16 +6,15 @@
  */
 
 /* Include Files */
-#include "sfunPID.h"
-#include "nlsig/nlsig.h"
-#include "helpers/norm_denorm_kernel.h"
+#include "PIDNet.h"
+#include "helpers/norm++kernel.h"
 
-/* Constructor Init */
-PIDNet::PIDNet(double ref, double yout, double Tsample,
+/* Instance Init */
+PIDNet::PIDNet(double ref, double yout, double dt,
         int umax_lim, int umin_lim) {
     follow = 0;
-    Ts = Tsample;
-    T_prev = -Tsample;
+    Ts = dt;
+    T_prev = -dt;
     countseq = 0;
 
     r = ref;
@@ -49,6 +48,8 @@ PIDNet::PIDNet(double ref, double yout, double Tsample,
     b = 1;
     c = 0;
 
+    filter_u;
+    uf = 0;
 }
 
 /* Function Definitions */
@@ -57,127 +58,131 @@ PIDNet::PIDNet(double ref, double yout, double Tsample,
  * Arguments    : paramsPID_T *Knet
  * Return Type  : void
  */
-void sfunPID_kernel(PIDNet& Knet, const double& t) {
+void PIDNet::compute(const double& t) {
 
-    double ym, yfict, e_u, Keu, ep, cut_freq, kpi, kui, du;
+    double ym, yfict, e_u, Keu, ep, cut_freq, kpi, kui, st, du;
 
-    Knet.T_prev = t;
+    T_prev = t;
     /*  Discretization Scheme */
     /*  Bilinear fractional parametrization */
     /*  constrain the discretization tuner to be within the unit */
     /*  circle limits of 0 and 1. */
 
     /* bilinear constant */
-    // kpi = 2.0/Knet.Ts;
-    cut_freq = (2*PI)/(10.0*2.0*Knet.Ts);
-    kpi = cut_freq;
+    // kpi = 2.0/ Ts;
+    cut_freq = (PI)/(10.0*Ts);
     /* first-order lpf time-constant for derivative */
-    cut_freq = (PI)/(10.0*2.0);
-    // pre-warp
-    kpi = kpi/tan(cut_freq);
-    Knet.Tf = Knet.Ts/(2.0F*tan(cut_freq));
+    // pre-warped bilinear constant, and filter time-constant
+    st = tan(PI/20.0);
+    kpi = cut_freq/st;
+    Tf = Ts/(2.0*st);
 
     /*  Inputs */
-    if (Knet.follow==1) {
-        ym = Knet.ym;
+    if (follow==1) {
+        ym = this->ym;
     }
     else {
-        ym = Knet.r;
-        Knet.ym = ym;
+        this->ym = r;
+        ym = this->ym;
     }
 
     /*  output recalculation AWU, anti-windup */
-    e_u = (Knet.u-Knet.v);
+    e_u = (u-v);
     //  This covers a decoupled PID structure instead of the
     //  error recalculation that covers a 1-DoF structure of error only.
     /*  AWUP output recalculation coefficient */
-    Keu = Knet.Kp + (0.5*Knet.Ts*Knet.Ki)+ ((2/Knet.Ts)*Knet.Kd);
-    kui = 1.5F/Knet.Ki;
-    yfict = Knet.y;
-    Knet.ua = e_u/Keu;
-    yfict += (Knet.ua);
+    Keu = Kp+(0.5*Ts*Ki)+((2/Ts)*Kd);
+    kui = 1.5F/Ki;
+    yfict = y;
+    ua = e_u/Keu;
+    yfict += (ua);
 
     /* Previous Pass*/
 
     /*  D */
-    Knet.ud *= (kpi*Knet.Tf-1); // previous ud
-    Knet.ud -= kpi*Knet.Td*(Knet.ed); // previous ed
+    ud *= (kpi*Tf-1); // previous ud
+    ud -= kpi*Td*(ed); // previous ed
     /*  I */
-    Knet.ui += (1/(Knet.Ti*kpi))*(Knet.ei); // previous ui and ei
-    Knet.ui -= kui*(Knet.upd);
+    ui += (1/(Ti*kpi))*(ei); // previous ui and ei
+    ui -= kui*(upd);
 
     /* Current Pass */
 
     /*  Errors */
-    ep = (Knet.b*ym)-yfict;
-    Knet.e = Knet.r-Knet.y;
+    ep = (b*ym)-yfict;
+    e = r-y;
     // integral input recalculation
-    Knet.ei = (ym-yfict)+e_u;
-    Knet.ed = (Knet.c*ym)-yfict;
+    ei = (ym-yfict)+e_u;
+    ed = (c*ym)-yfict;
 
     /*  Individual Output Terms */
     /*  P */
-    Knet.up = (ep);
+    up = (ep);
 
     /*  D */
-    Knet.ud += kpi*Knet.Td*(Knet.ed);
-    Knet.ud = Knet.ud/(kpi*Knet.Tf+1);
+    ud += kpi*Td*(ed);
+    ud = ud/(kpi*Tf+1);
 
     /* PD */
     /*  change in P, D contribution, bumpless P, D . stores current to previous */
     // error of previous PD contribution if bigger than output
-    Knet.upd = (Knet.up+Knet.ud);
+    upd = (up+ud);
 
     /*  I */
-    Knet.ui += (1/(Knet.Ti*kpi))*(Knet.ei);
+    ui += (1/(Ti*kpi))*(ei);
     /*  integral output recalculation */
-    Knet.ui -= Knet.ua;
-    Knet.ui += kui*(Knet.upd);
+    ui -= ua;
+    ui += kui*(upd);
 
     /*  Output Sum of Contributing Terms */
     /* Criticize*/
-    Knet.e_t = (Knet.up + Knet.lambdai*(Knet.ui)+ Knet.lambdad*Knet.ud);
-    Knet.v = Knet.Kp * Knet.e_t;
+    e_t = (up+lambdai*(ui)+lambdad*ud);
+    v = Kp*e_t;
     /* combined output recalculation */
-    Knet.u = Knet.v - Knet.ua;
+    uf = v-ua;
 
     /*  Actual Control Input Constraints for u */
-	Serial.print("bef_Knet.u="); Serial.println(Knet.u);
-	
-    // SATURATION
-    //Knet.u = maxim((double) Knet.umin, (minim(Knet.u, (double) Knet.umax)));
-	
-	/* Hard Saturation */
-    Knet.u = fmax((double) Knet.umin,
-            fmin(Knet.u, (double) Knet.umax
-            ));
+    //Serial.print("bef_ u="); Serial.println( u);
 
-	/* Logistic Saturation*/
-    nlsig(Knet.u, du, Knet.u, (double)Knet.umax, (double)Knet.umin,
-            (double)Knet.umax, (double)Knet.umin,
-            33, 6, 0, 0);
-    Serial.print("aft_Knet.u="); Serial.println(Knet.u);
+    // SATURATION
+    // u = maxim((double)  umin, (minim( u, (double)  umax)));
+
+    /* Hard Saturation */
+    filter_u.run(u,uf); // filter
+    u = fmax((double) umin,
+            fmin(u, (double) umax ));
+
+    /* Logistic Saturation*/
+    // nlsig( u, du,  u, (double) umax, (double) umin,
+    //        (double) umax, (double) umin,
+    //        33, 6, 0, 0);
+    //Serial.print("aft_ u="); Serial.println( u);
 
 //    double u_norm[1] = {1.0};
-//    double u_act[1] = {Knet.u};
+//    double u_act[1] = { u};
 //
-//    //Serial.print("prior: "); Serial.println(Knet.u);
-//    normalize<double>(u_act, u_norm, Knet.umax, Knet.umin);
+//    //Serial.print("prior: "); Serial.println( u);
+//    normalize<double>(u_act, u_norm,  umax,  umin);
 //    // Serial.print("norm: "); Serial.println(u_norm[0]);
 //    u_norm[0] = nlsig(u_norm[0], 1.0, -1.0,
 //            1.0, -1.0,
 //            33, 6, 0);
 //    //Serial.print("out_norm: "); Serial.println(u_norm[0]);
-//    denormalize<double>(u_norm, u_act, Knet.umax, Knet.umin);
-//    Knet.u = u_act[0];
-//    //Serial.print("after: "); Serial.println(Knet.u);
+//    denormalize<double>(u_norm, u_act,  umax,  umin);
+//     u = u_act[0];
+//    //Serial.print("after: "); Serial.println( u);
 
-    // Serial.print("UPWM: ");Serial.println(Knet.u); // debug
+    // Serial.print("UPWM: ");Serial.println( u); // debug
 
     /* Misc. House Keeping */
     // increment internal sample count for the PID.
-    Knet.countseq += 1;
+    countseq += 1;
 
+}
+void PIDNet::set_bc_follow(const int& b, const int& c, const char& follow) {
+    this->b = b;
+    this->c = c;
+    this->follow = follow;
 }
 
 
@@ -185,16 +190,16 @@ void sfunPID_kernel(PIDNet& Knet, const double& t) {
 
 //    /* SATURATION EQUIVALENCE OF SATURATION, DEAD-ZONE AND COULOMB FRICTION */
 //    // NL(.) 1-2 . DEAD-ZONE, min AND INVERSE DEAD-ZONE, max
-//    if ((fabs(Knet.u) <= fabs(Knet.zerotol))) {
+//    if ((fabs( u) <= fabs( zerotol))) {
 //        // 1. less or at dead-zone (minimum limit)
-//        Knet.u = 0;
-//    } else if ((fabs(Knet.u) > fabs(Knet.zerotol)) && (fabs(Knet.u) <= fabs(Knet.deadmax))) {
+//         u = 0;
+//    } else if ((fabs( u) > fabs( zerotol)) && (fabs( u) <= fabs( deadmax))) {
 //        // 2. at inverse dead-zone (maximum limit)
-//        Knet.u = copysign(Knet.deadmax, Knet.u); // if u < 0, u = -deadmax
+//         u = copysign( deadmax,  u); // if u < 0, u = -deadmax
 //    } else {
 //        // 3. out of inverse dead-zone (max limit)
 //        // added deadmax as disturbance, effect of coulomb friction in a sense.
-//        Knet.u = copysign(fabs(Knet.u + Knet.deadmax), Knet.u);
+//         u = copysign(fabs( u +  deadmax),  u);
 //    }
 
 /*

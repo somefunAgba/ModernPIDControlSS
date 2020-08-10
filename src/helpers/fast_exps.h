@@ -3,23 +3,23 @@
 //
 #pragma once
 
-#ifndef MODERNPIDCONTROLSS_FASTA_EXP_H
-#define MODERNPIDCONTROLSS_FASTA_EXP_H
+#ifndef MODERNPIDCONTROLSS_FAST_EXPS_H
+#define MODERNPIDCONTROLSS_FAST_EXPS_H
 
 #include <Arduino.h>
 
 
 
 template<class T>
-T expbysq(int x, int n);
+T expbysq(int, int);
 
 template<class T>
-T exp_by_ones(T x);
+T exp_by_ones(T);
 
 template<class T>
-T exp_fast(const T& x);
+T exp_fast(const T&);
 
-int is_int_even(const int& x);
+inline int is_int_even(const int&);
 
 static inline double exp_fast32(const double& x);
 static inline double exp_fast64(const double& x);
@@ -27,11 +27,10 @@ static inline double exp_fast64(const double& x);
 
 
 /* EVEN INTEGER CHECK*/
-int is_int_even(const int& x) {
+inline int is_int_even(const int& x) {
 // tests if an integer x is even or odd
 // returns: 1 for even x; 0 for odd x.
-
-	return int(~( x & 1 ));
+    return int( ~(x&1) );
 }
 
 /* EXP_BY ONES NORMALIZATION OF INPUT */
@@ -95,6 +94,7 @@ T exp_fast(const T& x) {
 
 }
 
+
 /* DOUBLE PRECISION- UNION STRUCTURE APPROXIMATION */
 double exp_fast32(const double& x){
 
@@ -126,4 +126,4 @@ double exp_fast64(const double& x) {
 
 
 
-#endif //MODERNPIDCONTROLSS_FASTA_EXP_H
+#endif //MODERNPIDCONTROLSS_FAST_EXPS_H

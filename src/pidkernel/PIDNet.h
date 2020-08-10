@@ -14,11 +14,18 @@
 #define SFUNPID_H
 
 #include <Arduino.h>
+#include "cplmfc/filterFO_pass.h"
 
 /* Data Structure-> Class Decl.*/
 /* class PIDNet*/
 class PIDNet {
 public:
+    explicit PIDNet(double, double, double, int, int);
+
+    // friend void sfunPID_kernel(PIDNet& Knet, const double& t);
+    void compute(const double&);
+    void set_bc_follow(const int&, const int&, const char&);
+
     char follow;
     double Ts;
     double T_prev;
@@ -27,7 +34,6 @@ public:
     double r;
     double y;
     double ym;
-    double xm[2]= {0.0, 0.0};
     double e;
     double ei;
     double ed;
@@ -55,16 +61,13 @@ public:
     int c = 0;
     double Tf;
 
-    PIDNet(double ref, double yout, double Tsample,
-                int umax_lim, int umin_lim);
+    filterFO_pass filter_u;
+    double uf;
 
-    //virtual ~PIDNet();
-
-    friend void sfunPID_kernel(PIDNet& Knet, const double& t);
 };
 
 //PIDNet::~PIDNet() = default;
-void sfunPID_kernel(PIDNet& Knet, const double& t);
+// void sfunPID_kernel(PIDNet& Knet, const double& t);
 //#define maxim(a,b)	(((a) > (b)) ? (a) : (b))
 //#define minim(a,b)	(((a) < (b)) ? (a) : (b))
 
