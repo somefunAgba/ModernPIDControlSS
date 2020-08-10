@@ -7,21 +7,22 @@ disqus: https-somefunagba-github-io-modernpidcontrolss
 <!-- abstract, summary, tldr, info, todo, tip , hint, important, success, check, done, faq, help, question-->
 <!-- warning, attention, failure, error, bug, missing, example, quote, cite-->
 
-Although, the concept and theory of the PID is considered established by many, yet the PID law is still largely misunderstood. It is usually under-rated as a simple and old control algorithm.
-Quite truly, the overview representation is simple, but its design is not so.
+!!!abstract "Introduction"
+    Although, the concept and theory of the PID is considered established by many, yet still largely misunderstood. 
+    It is sometimes rated as a simple and old control algorithm. Quite truly, the overview representation is simple, but its design is not so.    
+    
+    From the lens of neuroscience and psychology, the PID law is the simplest representation of active inference or perceptual control in nature. 
+    The PID law, actively tries to make inference to minimize the deviation of a perceived controllable behaviour from the expected behaviour. 
+    
+    In systems and control, this law is used as an algorithm for robust feedback control. It infers the necessary control input $u$ to a dynamical system, to reach an achievable expected output $r$ of the dynamical system. 
+    This means that the PID law is an artificial intelligence (AI) for inference. It represents the complex intelligence of inference in nature. 
+    
+    Notably, Nicolai Minorsky, who proposed the seminal theoretical representation of the PID realised this in the early nineties. 
+    An important design question is: a general framework for this AI architecture and its parameters for guaranteed stable inference (control).        
+    Two main problems in this AI exist. The representation, and the design of AI. Research in the control literature has mostly focused on the latter.
 
-From the lens of neuroscience, the PID law is the simplest representation of active inference in nature. It is the simplest representation of the complex intelligence of inference in nature. The PID law, actively tries to minimize the deviation of the sensed behaviour from the expected behaviour. It is a law for making inference based on an expected behaviour, and a sensed behaviour.
-
-This means that the PID law is an artificial intelligence (AI) for inference.
- Notably, Nicolai Minorsky, who proposed the seminal theoretical representation of the PID realised this in the early nineties. An important design question is: how to represent this AI and its parameters for guaranteed stable inference (control).
-
-In systems and control, this law is used as an algorithm for robust feedback control.
-It infers the necessary control input $u$ to a dynamical system, to reach an achievable expected output $r$ of the dynamical system
-
-Two main problems in this AI exist. The representation, and the design of AI. Research in the control literature has mostly focused on the latter.
-
-!!!summary "Synopsis"
-    In this library, using modern control theory, we provide for practical use, a simple but robust realization of the PID law represented in critic form.
+!!!summary "Summary"
+    Using modern control and signal processing theory, this library provides for practical use, a simple but robust realization of the PID law represented in critic form.
     The features implemented are compactly listed in the [about](about/about.md) page.
     The problem of automatic design of the PID law for control is approached from the viewpoint of the 'closed PID-loop model'.
     For a more technical understanding of this automatic tuning design, read the preprint at (https://arxiv.org/pdf/2006.00314). Also, please see the [library license](about/license.md) for further details on library use.
@@ -40,129 +41,354 @@ $$
 
 ## Usecase
 The tuning method included in this library as default is the CPLMFC.
-The process is illustrated as shown:
 
-![cplmfc_process](img/cplmfc_overviewanimated.gif)
+The usecase here provides a general overview for the using the library for control. It is divided into three steps. 
+The first two steps is to respectively obtain the maximum value of the output to be controlled and 
+obtain the discrete-time step the output settles to an average value.
+The last step uses information from the last two steps to run the automatic algorithm
 
-### Initializations
+See the step illustrations below.
+
+
+
+### STEP ONE: IDENTIFY THE MAXIMUM VALUE OF THE OUTPUT TO BE CONTROLLED
+
+<!-- ![cplmfc_TsID|150x150, 20%](img/idents_process_v2.png) -->
+<img  alt="clmfc_TsID" src="https://raw.githubusercontent.com/somefunAgba/ModernPIDControlSS/master/docs/img/idents_process_v2.png" width="150" />
+                                               
+=== "C++"
+``` c++
+
+/*
+ *  STEP1: IDENTIFY THE MAXIMUM STEADY STATE OUTPUT OF THE SYSTEM
+ *         GIVEN THE MAXIMUM CONTROL INPUT TO THE SYSTEM
+ */
+#include "Arduino.h"
+#include "Wire.h"
+#include "Adafruit_MCP4725.h"
+#include "Adafruit_MAX31865_library/Adafruit_MAX31865.h"
+
+/* Global Declarations */
+
+/* timings */
+int countseq = 0; // take note of this time-step variable
+double t_current = 0;
+int max_discrete_time_count = 5000; // vary as desired
+int dt = 1000; // equivalent to 1 seconds
+
+// set max. control input
+const int max_in = 10;
+
+// TODO: initialize other libraries for the DAC and ADC
+Adafruit_MCP4725 dac; // Adafruit MCP4725 dac
+Adafruit_MAX31865 thermo = Adafruit_MAX31865(10,11,12,13); // Adafruit MAX31865 PT100 adc
+
+void setup() {
+    // Turn on Serial Comms.
+    // 9600 baud is a compromise setting between easy to kill a runaway process
+    // and very slow process
+    Serial.begin(9600); // Can Go Up to 2M
+
+    //TODO: setup DAC and ADC
+    dac.begin(0x62); // Adafruit MCP4725A1 library
+    thermo.readRTD(); // Adafruit MAX31865 library
+}
+
+// input and output variables
+double in_pwm = 0;
+double out_celsius = 0;
+
+void loop() {
+    // ensure notion of fixed sampling
+    t_current = 0;
+
+    while (countseq >= 0) {
+        /* MAX-OUTPUT SYS ID- START */
+        /* log the output every dt milli-secs  */
+        if ( millis() - t_current >= dt) {
+            in_pwm = (4095/10.0)*max_in;
+            dac.setVoltage(in_pwm,"false"); // pass in max-input value to dac
+            out_celsius = thermo.temperature(100,430.0); // get the output temperature
+            t_current = millis();
+        }
+
+        // display input_pwm, output_celsius and current discrete-time step.
+        // TODO: note down the maximum value
+        //  where the out_celsius becomes averagely steady
+        Serial.print((String) in_pwm + ", celsius: " + out_celsius +
+                    ", countseq: " + countseq);
+        Serial.println(F("---\n"));
+
+        if (countseq >= max_discrete_time_count) {
+            countseq = -1;
+            break;
+        }
+        countseq++;
+
+    }
+
+}
+
+
+```
+
+### STEP TWO: CLOSED-LOOP INPUT-OUTPUT SETTLING-TIME
 
 === "C++"
 ``` c++
+/*
+ *  STEP2: IDENTIFY THE CLOSED-LOOP SETTLING-TIME OF THE OUTPUT
+ *         GIVEN AN ERROR CONTROL INPUT TO THE SYSTEM
+ */
 #include "Arduino.h"
-/* PID Library Include Files */
+#include "Wire.h"
+#include "Adafruit_MCP4725.h"
+#include <Adafruit_MAX31865_library/Adafruit_MAX31865.h>
+
+/* Global Declarations */
+
+/* timings */
+int countseq = 0; // take note of this time-step variable
+int max_discrete_time_count = 5000; // vary as desired
+
+double t = 0;
+double dt_control = 0.1; // control sampling-time; you can play with this as desired
+double t_prev_control = -dt_control;
+double dt_sys = 1.0; // equivalent to 1 seconds
+double t_prev_sys = -dt_sys;
+double t_start = 0;
+
+// set max. control input
+const int in_max = 10; // 10V, equivalent to 4095 PWM
+// set reference output celsius
+double ref_celsius = 0;
+
+// input and output variables
+int in_pwm;
+double in_val;
+double out_celsius = 0;
+//TODO: fill with max output celsius value identified in step 1.
+double out_celsius_max = 100; // change this to the correct value
+// TODO: initialize libraries for the DAC and ADC, if not Adafruit dac and adc
+Adafruit_MCP4725 dac; // Adafruit MCP4725 dac
+Adafruit_MAX31865 thermo = Adafruit_MAX31865(10,11,12,13); // Adafruit MAX31865 PT100 adc
+
+void setup() {
+    // Turn on Serial Comms.
+    // 9600 baud is a compromise setting between easy to kill a runaway process
+    // and very slow process
+    Serial.begin(9600); // Can Go Up to 2M
+
+    //TODO: setup DAC and ADC
+    dac.begin(0x62); // Adafruit MCP4725A1 library
+    thermo.readRTD(); // Adafruit MAX31865 library
+
+}
+
+
+void loop() {
+    // ensure notion of fixed sampling
+    t_start = millis()/1000.0;
+    t = t_start;
+    while (countseq >= 0) {
+        t = t - t_start;
+        /* CLOSED-LOOP N_TS SYS ID- START */
+        if( t >= (t_prev_control + dt_control) - 0.5*(dt_control)) {
+            if (countseq==0) {
+                double k = 1; // can vary between 0.5 and 1
+                ref_celsius = k*out_celsius_max;
+                out_celsius = out_celsius_max;
+            }
+            in_val = (in_max/out_celsius_max)*(ref_celsius-out_celsius);
+            in_pwm = int((4095/10.0)*in_val); // convert input voltage to pwm
+            t_prev_control = t;
+        }
+
+        dac.setVoltage(in_pwm,"false"); // pass in max-input value to dac
+
+        /* SYSTEM OUTPUT SAMPLING-: EVERY DT_SYS SECONDS*/
+        if ( t >= (t_prev_sys + dt_sys)) {
+            out_celsius = thermo.temperature(100,430.0); // get the output temperature
+            t_prev_sys = t;
+        }
+
+        // display input_pwm, output_celsius and current discrete-time step.
+        //TODO: note down the countseq value,
+        //  where the out_celsius becomes averagely steady.
+        //  This value becomes the N_ts value for the PID control tuning algorithm
+        Serial.print((String) in_pwm + ", celsius: " + out_celsius +
+                ", countseq: " + countseq);
+        Serial.println(F("---\n"));
+
+        if (countseq >= max_discrete_time_count) {
+            countseq = -1;
+            break;
+        }
+        countseq++;
+        t = millis()/1000.0;
+
+    }
+
+}
+
+```
+
+### STEP 3: IMPLEMENT PID CONTROL
+
+![cplmfc_process](img/cplmfc_overview.png)
+
+=== "C++"
+``` c++
+/*
+ *  STEP3: CLOSED-LOOP CONTROL OF THE OUTPUT-TEMPERATURE
+ *         USING A PID-CONTROL PWM INPUT TO THE SYSTEM
+ */
+#include "Arduino.h"
+
+#include "Wire.h"
+#include "Adafruit_MCP4725.h"
+#include "Adafruit_MAX31865_library/Adafruit_MAX31865.h"
+
+/*PID Library*/
 #include "ModernPIDControlSS.h"
 
 /* Global Declarations */
-/* Tuning Parameters */
-double wn;
-float alpha;
 
-/* Timing Information */
-double L;
-double ts;
-double dt = 0.01;
-double t = 0.0;
+/* timings */
+int countseq = 0; // take note of this time-step variable
+int max_discrete_time_count = 5000; // vary as desired
 
-const double r = 150.0;
-double y = 0;
+double t = 0;
+double dt_control = 0.1; // control sampling-time; you can play with this as desired
+double dt_sys = 1.0; // equivalent to 1 seconds
+double t_prev_sys = -dt_sys;
+double t_start = 0;
 
-int countseq = 0;
 
-const int umin = -255;
-const int umax = 255;
-const int dead_max = 100;
-const int dead_min = 10; // zero tolerance limits
+// set reference output celsius
+double ref_celsius = 0;
+// input and output variables
+int in_pwm;
+double in_val;
+double out_celsius = 0;
+
+// TODO: initialize other libraries for the DAC and ADC
+Adafruit_MCP4725 dac; // Adafruit MCP4725 dac
+Adafruit_MAX31865 thermo = Adafruit_MAX31865(10,11,12,13); // Adafruit MAX31865 PT100 adc
+
 
 /* Parameters PID Structure Config. */
-PIDNet PIDobj_II(r, y, dt, umax, umin);
+// 10 -> max control input, 0 -> min control input in voltage
+PIDNet  PID_I(ref_celsius, out_celsius, dt_control,10, 0);
+cplmfc cplmfc_tuner;
 
-```
 
-
-### Setup
-
-=== "C++"
-``` c++
 void setup() {
     // Turn on Serial Comms.
-    // 9600 baud is a compromise setting for easy killing of a runaway process
+    // 9600 baud is a compromise setting between easy to kill a runaway process
     // and very slow process
     Serial.begin(9600); // Can Go Up to 2M
-    PIDobj_II.Ts = dt;
+
+    //TODO: setup DAC and ADC
+    dac.begin(0x62); // Adafruit MCP4725A1 library
+    thermo.readRTD(); // Adafruit MAX31865 library
+
     /* Parameters PID Structure Config. */
-    PIDobj_II.b = 1; // optional
-    PIDobj_II.c = 0; // optional
-    PIDobj_II.follow = 1; // optional
- 
-    
+     PID_I.set_bc_follow(0,0,0);
+
     /* CPLMFC Tuning HyperParameter Config. */
-    int Nts = 228; // settling horizon: set after settling-time identification
-    ts = Nts*dt; // settling time (including delay time)
-    L = 0*dt; // estimated transport or delay time
-    /* Hyper-Parameter for Kp and Critic Weights */
-    alpha = 20.0; //  for P
-    // for D
-    PIDobj_II.lambdad = 0.1;
-    // I
-    PIDobj_II.lambdai = 0.5;
-    
+    /* Hyper-Parameter for Kp and Critic Weights */ // for P, I, D
+    //TODO: increase alpha steadily to increase fast response;
+    //cplmfc_tuner.set_alpha_critics( PID_I, alpha, lambda_i, lambda_p)
+    cplmfc_tuner.set_alpha_critics( PID_I,10.0,0.5,0.1);
+
     /* PID Commonsense Model Config. */
-    /* Natural Frequency for PID Commonsense */
-    tuneWn(PIDobj_II, ts, wn);
-    //Serial.println(wn);// debug
+    // note: if the sampling-time is changed
+    // rerun the closed-loop settling-time identification
+    // to get the correct N_ts and N_tau_l
+    // TODO: replace with identified settling-time count from step 2
+    int N_ts = 228; // N_ts at 0.1secs;
+    // TODO: replace with identified delay-time count
+    //  (that is: maximum time-step at which output = 0)
+    int N_tau_l = 0;
+    //cplmfc_tuner.begin( PID_I, N_ts, N_tau_l);
+    cplmfc_tuner.begin( PID_I, N_ts, N_tau_l);
+
 }
-```
 
-### Settling-Time Identification Loop
 
-=== "C++"
-```c++
-        
-        ...
-        /* SYS ID- START */
-        if (sys_id == 1) {
-            if (countseq==0) {
-                ref_id = 1*255;
-                PIDobj_II.y = 1*255;
-            }
-            PIDobj_II.u = ref_id - PIDobj_II.y; // SYS ID- END
+void loop() {
+    // ensure notion of fixed sampling
+    t_start = millis()/1000.0;
+    t = t_start;
+    while (countseq >= 0) {
+        t = t - t_start;
+        /* CLOSED-LOOP N_TS SYS ID- START */
+        if( t >= ( PID_I.T_prev +  PID_I.Ts) - 0.5*( PID_I.Ts)) {
+            PID_kernelOS( PID_I, cplmfc_tuner, t);
+            in_val =  PID_I.u;
+            in_pwm = int((4095/10.0)*in_val); // convert input voltage to pwm
         }
-        ...
-```
 
-### PID-Control Loop
+        dac.setVoltage(in_pwm,"false"); // pass in max-input value to dac
 
-=== "C++"
-``` c++
-    ...
-    tstart = micros()/double(1000000);
-    t = t - tstart;
-    if (t >=( (PIDobj_II.T_prev+PIDobj_II.Ts)-(0.5*PIDobj_II.Ts) )) {
+        /* SYSTEM OUTPUT SAMPLING-: EVERY DT_SYS SECONDS*/
+        if ( t >= (t_prev_sys + dt_sys)) {
+            out_celsius = thermo.temperature(100,430.0); // get the output temperature
+             PID_I.y = out_celsius;
+            t_prev_sys = t;
+        }
 
-        /* CPLM Evolution */
-        cplm_kernel(PIDobj_II.ym, PIDobj_II.xm, PIDobj_II.r,
-               PIDobj_II.Ts, 0, 0, wn);
-        // Serial.print("ym: "); Serial.println(PIDobj_II.ym);
-        /* CPLMFC Tuning Computation */
-        tuneKp(PIDobj_II, t, L, ts, alpha, 2);
-        //Serial.print("Kp: ");Serial.println(PIDobj_II.Kp);
 
-        tuneKi(PIDobj_II, wn);
-        //Serial.print(" Ki: ");Serial.print(PIDobj_II.Ki);
+        // display input_pwm, output_celsius and current discrete-time step.
+        // observe the values
+        Serial.print((String) in_pwm + ", celsius: " + out_celsius +
+                ", countseq: " + countseq);
+        Serial.println(F("---\n"));
 
-        tuneKd(PIDobj_II, wn);
-        //Serial.print(" Kd: ");Serial.println(PIDobj_II.Kd);
+        if (countseq >= max_discrete_time_count) {
+            countseq = -1;
+            break;
+        }
+        countseq++;
+        t = millis()/1000.0;
 
-        /* PID Control State Evolution: Architecture */
-        sfunPID_kernel(PIDobj_II, t);
-        //Serial.print("upwm_II: "); Serial.println(PIDobj_II.u);
     }
-    t = micros()/double(1000000);
+
+}
+ 
+```
+
+The identified settling-time is set with this line
+```
+    ...
+    //cplmfc_tuner.begin( PID_I, N_ts, N_tau_l);
+    cplmfc_tuner.begin( PID_I, N_ts, N_tau_l);
     ...
 ```
+$N_{ts}$ is the discrete settling-time count. 
+$N_{tau_{l}}$ = 0 by default, is the discrete delay-time count when there is no change in output with respect to the input
+
+
+Tuning performance is varied with this line in the set-up.
+```
+    ...
+    //cplmfc_tuner.set_alpha_critics( PID_I, alpha, lambda_i, lambda_d)
+    cplmfc_tuner.set_alpha_critics( PID_I,10.0,0.5,0.1);
+    ...
+```
+
+It manually configures the main tuner hyper-parameter: $\alpha$, 
+and the critic weights: $\lambda_i$ = 0.5 by default and $\lambda_d$ = 0.1 by default
+
+The $\alpha$ constant is meant to gradually increased or reduced till you get a satisfactory response speed
+
+If needed, vary the critic weight $\lambda_i$ to reduce overshoot or reduce steady-state error => min:0, max: 1.0
+
+If needed, reduce the critic weight $\lambda_d$ to reduce oscillatory response, if any => min: 0, max: 1.0
 
 ## Notice
-Please, this Guide is still in a draft (beta) state. It will be updated gradually.
+Please, this guide is still in a beta state. It will be updated gradually.
 
 !!!faq
     Please, feel free to contact me at oasomefun@futa.edu.ng for any questions or to report any bug.
