@@ -54,7 +54,7 @@ See the step illustrations below.
 ### STEP ONE: IDENTIFY THE MAXIMUM VALUE OF THE OUTPUT TO BE CONTROLLED
 
 <!-- ![cplmfc_TsID|150x150, 20%](img/idents_process_v2.png) -->
-<img  alt="clmfc_TsID" src="https://raw.githubusercontent.com/somefunAgba/ModernPIDControlSS/master/docs/img/idents_process_v2.png" width="150" />
+<img  alt="clmfc_TsID" src="https://raw.githubusercontent.com/somefunAgba/ModernPIDControlSS/master/docs/img/idents_process_v2.png" width="500" />
                                                
 === "C++"
 ``` c++
@@ -235,7 +235,8 @@ void loop() {
 
 ### STEP 3: IMPLEMENT PID CONTROL
 
-![cplmfc_process](img/cplmfc_overview.png)
+<img  alt="clmfc_overview" src="https://raw.githubusercontent.com/somefunAgba/ModernPIDControlSS/master/docs/img/cplmfc_overview.png" width="500" />
+  
 
 === "C++"
 ``` c++
