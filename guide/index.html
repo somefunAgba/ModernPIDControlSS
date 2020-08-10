@@ -299,15 +299,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a class="md-nav__link" href="#initializations">
-    Initializations
+  <a class="md-nav__link" href="#step-one">
+    STEP ONE
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a class="md-nav__link" href="#setup">
-    Setup
+  <a class="md-nav__link" href="#step-two">
+    STEP TWO
   </a>
   
 </li>
@@ -320,8 +320,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a class="md-nav__link" href="#pid-control-loop">
-    PID-Control Loop
+  <a class="md-nav__link" href="#step-3">
+    STEP 3
   </a>
   
 </li>
@@ -482,15 +482,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a class="md-nav__link" href="#initializations">
-    Initializations
+  <a class="md-nav__link" href="#step-one">
+    STEP ONE
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a class="md-nav__link" href="#setup">
-    Setup
+  <a class="md-nav__link" href="#step-two">
+    STEP TWO
   </a>
   
 </li>
@@ -503,8 +503,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a class="md-nav__link" href="#pid-control-loop">
-    PID-Control Loop
+  <a class="md-nav__link" href="#step-3">
+    STEP 3
   </a>
   
 </li>
@@ -540,14 +540,18 @@
                 <h1 id="simplified-algorithm-for-a-modern-implementation-of-the-pid-law">Simplified Algorithm for a Modern Implementation of the PID Law<a class="headerlink" href="#simplified-algorithm-for-a-modern-implementation-of-the-pid-law" title="Permanent link">&para;</a></h1>
 <p><!-- abstract, summary, tldr, info, todo, tip , hint, important, success, check, done, faq, help, question-->
 <!-- warning, attention, failure, error, bug, missing, example, quote, cite--></p>
-<p>Although, the concept and theory of the PID is considered established by many, yet the PID law is still largely misunderstood. It is usually under-rated as a simple and old control algorithm.
-Quite truly, the overview representation is simple, but its design is not so.</p>
-<p>From the lens of neuroscience, the PID law is the simplest representation of active inference in nature. It is the simplest representation of the complex intelligence of inference in nature. The PID law, actively tries to minimize the deviation of the sensed behaviour from the expected behaviour. It is a law for making inference based on an expected behaviour, and a sensed behaviour.</p>
-<p>This means that the PID law is an artificial intelligence (AI) for inference.
- Notably, Nicolai Minorsky, who proposed the seminal theoretical representation of the PID realised this in the early nineties. An important design question is: how to represent this AI and its parameters for guaranteed stable inference (control).</p>
-<p>In systems and control, this law is used as an algorithm for robust feedback control.
-It infers the necessary control input <span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span> to a dynamical system, to reach an achievable expected output <span><span class="MathJax_Preview">r</span><script type="math/tex">r</script></span> of the dynamical system</p>
-<p>Two main problems in this AI exist. The representation, and the design of AI. Research in the control literature has mostly focused on the latter.</p>
+<div class="admonition abstract">
+<p class="admonition-title">Introduction</p>
+<p>Although, the concept and theory of the PID is considered established by many, yet still largely misunderstood. 
+It is sometimes rated as a simple and old control algorithm. Quite truly, the overview representation is simple, but its design is not so.  <br />
+From the lens of neuroscience and psychology, the PID law is the simplest representation of active inference or perceptual control in nature. 
+The PID law, actively tries to make inference to minimize the deviation of a perceived controllable behaviour from the expected behaviour. 
+In systems and control, this law is used as an algorithm for robust feedback control. It infers the necessary control input <span><span class="MathJax_Preview">u</span><script type="math/tex">u</script></span> to a dynamical system, to reach an achievable expected output <span><span class="MathJax_Preview">r</span><script type="math/tex">r</script></span> of the dynamical system 
+This means that the PID law is an artificial intelligence (AI) for inference. It represents the complex intelligence of inference in nature. 
+Notably, Nicolai Minorsky, who proposed the seminal theoretical representation of the PID realised this in the early nineties. 
+An important design question is: a general framework for this AI architecture and its parameters for guaranteed stable inference (control).      <br />
+Two main problems in this AI exist. The representation, and the design of AI. Research in the control literature has mostly focused on the latter.</p>
+</div>
 <div class="admonition summary">
 <p class="admonition-title">Synopsis</p>
 <p>In this library, using modern control theory, we provide for practical use, a simple but robust realization of the PID law represented in critic form.
@@ -574,7 +578,7 @@ $$</p>
 <p>The tuning method included in this library as default is the CPLMFC.
 The process is illustrated as shown:</p>
 <p><img alt="cplmfc_process" src="../img/cplmfc_overviewanimated.gif" /></p>
-<h3 id="initializations">Initializations<a class="headerlink" href="#initializations" title="Permanent link">&para;</a></h3>
+<h3 id="step-one">STEP ONE<a class="headerlink" href="#step-one" title="Permanent link">&para;</a></h3>
 <div class="tabbed-set" data-tabs="1:1"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><label for="__tabbed_1_1">C++</label><div class="tabbed-content"></div>
 </div>
 <div class="highlight"><pre><span></span><code><span class="cp">#include</span> <span class="cpf">&quot;Arduino.h&quot;</span><span class="cp"></span>
@@ -606,7 +610,7 @@ The process is illustrated as shown:</p>
 <span class="n">PIDNet</span> <span class="nf">PIDobj_II</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">umax</span><span class="p">,</span> <span class="n">umin</span><span class="p">);</span>
 </code></pre></div>
 
-<h3 id="setup">Setup<a class="headerlink" href="#setup" title="Permanent link">&para;</a></h3>
+<h3 id="step-two">STEP TWO<a class="headerlink" href="#step-two" title="Permanent link">&para;</a></h3>
 <div class="tabbed-set" data-tabs="2:1"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><label for="__tabbed_2_1">C++</label><div class="tabbed-content"></div>
 </div>
 <div class="highlight"><pre><span></span><code><span class="kt">void</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
@@ -654,7 +658,7 @@ The process is illustrated as shown:</p>
         <span class="p">...</span>
 </code></pre></div>
 
-<h3 id="pid-control-loop">PID-Control Loop<a class="headerlink" href="#pid-control-loop" title="Permanent link">&para;</a></h3>
+<h3 id="step-3">STEP 3<a class="headerlink" href="#step-3" title="Permanent link">&para;</a></h3>
 <div class="tabbed-set" data-tabs="4:1"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><label for="__tabbed_4_1">C++</label><div class="tabbed-content"></div>
 </div>
 <div class="highlight"><pre><span></span><code>    <span class="p">...</span>
