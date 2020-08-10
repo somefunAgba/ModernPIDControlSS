@@ -82,8 +82,9 @@ void loop() {
     t = t_start;
     while (countseq >= 0) {
         t = t - t_start;
-        /* CLOSED-LOOP N_TS SYS ID- START */
+        /* CLOSED-LOOP START */
         if( t >= ( PID_I.T_prev +  PID_I.Ts) - 0.5*( PID_I.Ts)) {
+            // Run the PID and its tuning algorithm
             PID_kernelOS( PID_I, cplmfc_tuner, t);
             in_val =  PID_I.u;
             in_pwm = int((4095/10.0)*in_val); // convert input voltage to pwm
@@ -105,10 +106,6 @@ void loop() {
                 ", countseq: " + countseq);
         Serial.println(F("---\n"));
 
-        if (countseq >= max_discrete_time_count) {
-            countseq = -1;
-            break;
-        }
         countseq++;
         t = millis()/1000.0;
 

@@ -33,7 +33,6 @@ cplmfc cplmfc_I;
 cplmfc cplmfc_II;
 
 
-
 void setup() {
     // Turn on Serial Comms.
     // 9600 baud is a compromise setting between easy to kill a runaway process
