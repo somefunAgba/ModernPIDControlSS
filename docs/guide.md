@@ -40,16 +40,17 @@ $$
 <!--* `mkdocs -h` - Print help message and exit.-->
 
 ## Usecase
-The tuning method included in this library as default is the CPLMFC.
+The tuning method included in this library as default is the CPLMFC. 
+You can also use this library without using the tuner included (this usecase example will be added later).
 
-The usecase here provides a general overview for the using the library for control. It is divided into three steps. 
+The usecase example  provides a general overview for using the library for control. It is divided into three steps. 
 The first two steps is to respectively obtain the maximum value of the output to be controlled and 
 obtain the discrete-time step the output settles to an average value.
 The last step uses information from the last two steps to run the automatic algorithm
 
 See the step illustrations below.
 
-
+The aim is to control the observed temperature using a system driven by a PWM input.
 
 ### STEP ONE: IDENTIFY THE MAXIMUM VALUE OF THE OUTPUT TO BE CONTROLLED
 
@@ -324,8 +325,9 @@ void loop() {
     t = t_start;
     while (countseq >= 0) {
         t = t - t_start;
-        /* CLOSED-LOOP N_TS SYS ID- START */
+        /* CLOSED-LOOP START */
         if( t >= ( PID_I.T_prev +  PID_I.Ts) - 0.5*( PID_I.Ts)) {
+            // Run the PID and its tuning algorithm     
             PID_kernelOS( PID_I, cplmfc_tuner, t);
             in_val =  PID_I.u;
             in_pwm = int((4095/10.0)*in_val); // convert input voltage to pwm
@@ -347,10 +349,6 @@ void loop() {
                 ", countseq: " + countseq);
         Serial.println(F("---\n"));
 
-        if (countseq >= max_discrete_time_count) {
-            countseq = -1;
-            break;
-        }
         countseq++;
         t = millis()/1000.0;
 
