@@ -18,7 +18,7 @@ Features are detailed in [About Page](https://somefunagba.github.io/ModernPIDCon
 
 ## Quick start
 
-For a detailed explanation of the library, installation, release, and use guides, configuration options, visit [ModernPIDControlSS][1]
+For possibly detailed explanation of the library, installation, release, and use guides, configuration options, visit [ModernPIDControlSS][1]
 
 [1]: https://somefunagba.github.io/ModernPIDControlSS/
 
