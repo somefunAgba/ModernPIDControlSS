@@ -6,6 +6,15 @@
 
 #include "Arduino.h"
 
+#ifndef TAN_ST_C
+#define TAN_ST_C
+/**
+ * Shanon's discrete-time
+ * Bilinear pre-warping tan constant
+ */
+inline constexpr double TAN_ST = 0.1583844403;
+#endif
+
 /* Class Declarations */
 class filterFO_pass{
 public:

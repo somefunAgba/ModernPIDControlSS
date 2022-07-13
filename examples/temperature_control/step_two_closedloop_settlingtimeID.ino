@@ -53,6 +53,7 @@ void loop() {
     t_start = millis()/1000.0;
     t = t_start;
     while (countseq >= 0) {
+
         t = t - t_start;
         /* CLOSED-LOOP N_TS SYS ID- START */
         if( t >= (t_prev_control + dt_control) - 0.5*(dt_control)) {

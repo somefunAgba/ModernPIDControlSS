@@ -15,7 +15,7 @@
 
 /* timings */
 int countseq = 0; // take note of this time-step variable
-int max_discrete_time_count = 5000; // vary as desired
+//int max_discrete_time_count = 5000; // vary as desired
 
 double t = 0;
 double dt_control = 0.1; // control sampling-time; you can play with this as desired
@@ -38,7 +38,7 @@ Adafruit_MAX31865 thermo = Adafruit_MAX31865(10,11,12,13); // Adafruit MAX31865 
 
 /* Parameters PID Structure Config. */
 // 10 -> max control input, 0 -> min control input in voltage
-PIDNet  PID_I(ref_celsius, out_celsius, dt_control,10, 0);
+PIDNet  PID_I(ref_celsius, out_celsius, dt_control,10, 0, 0, 0);
 cplmfc cplmfc_tuner;
 
 
@@ -75,39 +75,39 @@ void setup() {
 
 }
 
+char flag;
 
 void loop() {
     // ensure notion of fixed sampling
-    t_start = millis()/1000.0;
+    t_start = millis()/1E3;
     t = t_start;
     while (countseq >= 0) {
+        t = millis()/1E3;
         t = t - t_start;
         /* CLOSED-LOOP START */
-        if( t >= ( PID_I.T_prev +  PID_I.Ts) - 0.5*( PID_I.Ts)) {
-            // Run the PID and its tuning algorithm
-            PID_kernelOS( PID_I, cplmfc_tuner, t);
-            in_val =  PID_I.u;
+        // Run the PID and its tuning algorithm
+        flag = PID_kernelOS( PID_I, cplmfc_tuner, t);
+        if (flag) {
+            countseq++;
+            flag = 0;
+            in_val = PID_I.u;
             in_pwm = int((4095/10.0)*in_val); // convert input voltage to pwm
         }
-
         dac.setVoltage(in_pwm,"false"); // pass in max-input value to dac
 
         /* SYSTEM OUTPUT SAMPLING-: EVERY DT_SYS SECONDS*/
         if ( t >= (t_prev_sys + dt_sys)) {
             out_celsius = thermo.temperature(100,430.0); // get the output temperature
-             PID_I.y = out_celsius;
+            PID_I.y = out_celsius;
             t_prev_sys = t;
+
+            // display input_pwm, output_celsius and current discrete-time step.
+            // observe the values
+            Serial.print((String) in_pwm + ", celsius: " + out_celsius +
+                    ", countseq: " + countseq);
+            Serial.println(F("---\n"));
+
         }
-
-
-        // display input_pwm, output_celsius and current discrete-time step.
-        // observe the values
-        Serial.print((String) in_pwm + ", celsius: " + out_celsius +
-                ", countseq: " + countseq);
-        Serial.println(F("---\n"));
-
-        countseq++;
-        t = millis()/1000.0;
 
     }
 

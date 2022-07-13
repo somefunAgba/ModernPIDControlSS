@@ -15,8 +15,8 @@
 
 void cplm_kernel(double& ym, double& xm, double rin) {
 
-    double st = tan(PI/20.0);
-    double Tf_kpi = PI/(20.0*st*st);
+    //double st = tan(PI/20.0);
+    double Tf_kpi = PI/(20.0*TAN_ST*TAN_ST);
 
     xm = xm + ((Tf_kpi-1)*ym);
     ym = (xm+rin)/(Tf_kpi+1);
@@ -60,8 +60,8 @@ void filterFO_pass::run(double& y, double u) {
 }
 
 filterFO_pass::filterFO_pass() {
-    double st = tan(PI/20.0);
-    Tf_kpi = PI/(20.0*st*st);
+    //double st = tan(PI/20.0);
+    Tf_kpi = PI/(20.0*TAN_ST*TAN_ST);
     x = 0;
 }
 

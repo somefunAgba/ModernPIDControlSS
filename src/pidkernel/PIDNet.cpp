@@ -11,7 +11,7 @@
 
 /* Instance Init */
 PIDNet::PIDNet(double ref, double yout, double dt,
-        int umax_lim, int umin_lim) {
+        int umax_lim, int umin_lim, int dead_max, int dead_min) {
     follow = 0;
     Ts = dt;
     T_prev = -dt;
@@ -32,10 +32,14 @@ PIDNet::PIDNet(double ref, double yout, double dt,
     ua = 0;
     v = 0;
     u = 0;
+    uo = 0;
     e_t = 0;
 
     umax = umax_lim;
     umin = umin_lim;
+
+    this->dead_max = dead_max;
+    this->dead_min = dead_min;
 
     Kp = 0.001;
     Ki = 0.0;
@@ -47,6 +51,14 @@ PIDNet::PIDNet(double ref, double yout, double dt,
     Tf = 0.5;
     b = 1;
     c = 0;
+
+    /* discretization */
+    double cut_freq = (PI)/(10.0*dt);
+    /* first-order lpf time-constant for derivative */
+    // pre-warped bilinear constant, and filter time-constant
+    //double st = tan(PI/20.0);
+    kpi = cut_freq/TAN_ST;
+    Tf = Ts/(2.0*TAN_ST);
 
     filter_u;
     uf = 0;
@@ -60,7 +72,7 @@ PIDNet::PIDNet(double ref, double yout, double dt,
  */
 void PIDNet::compute(const double& t) {
 
-    double ym, yfict, e_u, Keu, ep, cut_freq, kpi, kui, st, du;
+    double ym, yfict, e_u, Keu, ep, kui;
 
     T_prev = t;
     /*  Discretization Scheme */
@@ -69,13 +81,13 @@ void PIDNet::compute(const double& t) {
     /*  circle limits of 0 and 1. */
 
     /* bilinear constant */
-    // kpi = 2.0/ Ts;
-    cut_freq = (PI)/(10.0*Ts);
-    /* first-order lpf time-constant for derivative */
-    // pre-warped bilinear constant, and filter time-constant
-    st = tan(PI/20.0);
-    kpi = cut_freq/st;
-    Tf = Ts/(2.0*st);
+//    // kpi = 2.0/ Ts;
+//    cut_freq = (PI)/(10.0*Ts);
+//    /* first-order lpf time-constant for derivative */
+//    // pre-warped bilinear constant, and filter time-constant
+//    st = tan(PI/20.0);
+//    kpi = cut_freq/st;
+//    Tf = Ts/(2.0*st);
 
     /*  Inputs */
     if (follow==1) {
@@ -102,6 +114,7 @@ void PIDNet::compute(const double& t) {
     /*  D */
     ud *= (kpi*Tf-1); // previous ud
     ud -= kpi*Td*(ed); // previous ed
+    
     /*  I */
     ui += (1/(Ti*kpi))*(ei); // previous ui and ei
     ui -= kui*(upd);
@@ -144,35 +157,13 @@ void PIDNet::compute(const double& t) {
     /*  Actual Control Input Constraints for u */
     //Serial.print("bef_ u="); Serial.println( u);
 
-    // SATURATION
-    // u = maxim((double)  umin, (minim( u, (double)  umax)));
-
     /* Hard Saturation */
-    filter_u.run(u,uf); // filter
-    u = fmax((double) umin,
-            fmin(u, (double) umax ));
-
-    /* Logistic Saturation*/
-    // nlsig( u, du,  u, (double) umax, (double) umin,
-    //        (double) umax, (double) umin,
-    //        33, 6, 0, 0);
-    //Serial.print("aft_ u="); Serial.println( u);
-
-//    double u_norm[1] = {1.0};
-//    double u_act[1] = { u};
-//
-//    //Serial.print("prior: "); Serial.println( u);
-//    normalize<double>(u_act, u_norm,  umax,  umin);
-//    // Serial.print("norm: "); Serial.println(u_norm[0]);
-//    u_norm[0] = nlsig(u_norm[0], 1.0, -1.0,
-//            1.0, -1.0,
-//            33, 6, 0);
-//    //Serial.print("out_norm: "); Serial.println(u_norm[0]);
-//    denormalize<double>(u_norm, u_act,  umax,  umin);
-//     u = u_act[0];
-//    //Serial.print("after: "); Serial.println( u);
-
-    // Serial.print("UPWM: ");Serial.println( u); // debug
+    //filter_u.run(u,uf); // filter
+    u = uf;
+    u = fmax((double) umin,fmin(u, (double) umax ));
+    uo = u;
+    //dead_zone<double>(uo, dead_max, dead_min);
+    // uo = fmax((double) umin, fmin(uo, (double) umax ));
 
     /* Misc. House Keeping */
     // increment internal sample count for the PID.
@@ -195,6 +186,30 @@ void PIDNet::set_bc_follow(const int& b, const int& c, const char& follow) {
 }
 
 
+// SATURATION
+// u = maxim((double)  umin, (minim( u, (double)  umax)));
+
+/* Logistic Saturation*/
+// nlsig( u, du,  u, (double) umax, (double) umin,
+//        (double) umax, (double) umin,
+//        33, 6, 0, 0);
+//Serial.print("aft_ u="); Serial.println( u);
+
+//    double u_norm[1] = {1.0};
+//    double u_act[1] = { u};
+//
+//    //Serial.print("prior: "); Serial.println( u);
+//    normalize<double>(u_act, u_norm,  umax,  umin);
+//    // Serial.print("norm: "); Serial.println(u_norm[0]);
+//    u_norm[0] = nlsig(u_norm[0], 1.0, -1.0,
+//            1.0, -1.0,
+//            33, 6, 0);
+//    //Serial.print("out_norm: "); Serial.println(u_norm[0]);
+//    denormalize<double>(u_norm, u_act,  umax,  umin);
+//     u = u_act[0];
+//    //Serial.print("after: "); Serial.println( u);
+
+// Serial.print("UPWM: ");Serial.println( u); // debug
 
 
 //    /* SATURATION EQUIVALENCE OF SATURATION, DEAD-ZONE AND COULOMB FRICTION */
