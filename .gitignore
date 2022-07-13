@@ -6,3 +6,4 @@ CMakeLists.txt
 .vscode/
 /unused/
 arduino-cli.exe
+/help/
