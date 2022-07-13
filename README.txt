@@ -1,5 +1,5 @@
 ***************************************************************
-* ModernPIDControlSS Library - Version 1.0.0
+* ModernPIDControlSS Library - Version 1.1.2
 * Author: Oluwasegun Somefun <oasomefun@futa.edu.ng>
 *
 * This library is copyrighted under the MIT License.
