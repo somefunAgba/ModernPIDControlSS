@@ -1,2 +1,8 @@
 /cmake/
+/cmakeold/
+/build/
 /cmake-build-debug-mingw/
+CMakeLists.txt
+.vscode/
+/unused/
+arduino-cli.exe
