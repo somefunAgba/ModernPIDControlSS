@@ -1,59 +1,59 @@
 /*
- *  STEP1: IDENTIFY THE MAXIMUM STEADY STATE OUTPUT OF THE SYSTEM
- *         GIVEN THE MAXIMUM CONTROL INPUT TO THE SYSTEM
+ *  PASO1: IDENTIFICAR LA SALIDA MÁXIMA EN ESTADO ESTACIONARIO DEL SISTEMA
+ *         DADA LA ENTRADA DE CONTROL MÁXIMA AL SISTEMA
  */
 #include "Arduino.h"
 #include "Wire.h"
 #include "Adafruit_MCP4725.h"
 #include "Adafruit_MAX31865_library/Adafruit_MAX31865.h"
 
-/* Global Declarations */
+/* Declaraciones Globales */
 
-/* timings */
-int countseq = 0; // take note of this time-step variable
+/* temporización */
+int countseq = 0; // tomar nota de esta variable de paso de tiempo
 double t_current = 0;
-int max_discrete_time_count = 5000; // vary as desired
-int dt = 1000; // equivalent to 1 seconds
+int max_discrete_time_count = 5000; // variar según se desee
+int dt = 1000; // equivalente a 1 segundo
 
-// set max. control input
+// establecer entrada de control máx.
 const int max_in = 10;
 
-// TODO: initialize other libraries for the DAC and ADC
-Adafruit_MCP4725 dac; // Adafruit MCP4725 dac
-Adafruit_MAX31865 thermo = Adafruit_MAX31865(10,11,12,13); // Adafruit MAX31865 PT100 adc
+// TODO: inicializar otras bibliotecas para el DAC y ADC
+Adafruit_MCP4725 dac; // DAC Adafruit MCP4725
+Adafruit_MAX31865 thermo = Adafruit_MAX31865(10,11,12,13); // ADC Adafruit MAX31865 PT100
 
 void setup() {
-    // Turn on Serial Comms.
-    // 9600 baud is a compromise setting between easy to kill a runaway process
-    // and very slow process
-    Serial.begin(9600); // Can Go Up to 2M
+    // Activar Comunicaciones Seriales.
+    // 9600 baudios es una configuración de compromiso entre fácil de detener un proceso fuera de control
+    // y un proceso muy lento
+    Serial.begin(9600); // Puede ir hasta 2M
 
-    //TODO: setup DAC and ADC
-    dac.begin(0x62); // Adafruit MCP4725A1 library
-    thermo.readRTD(); // Adafruit MAX31865 library
+    //TODO: configurar DAC y ADC
+    dac.begin(0x62); // Biblioteca Adafruit MCP4725A1
+    thermo.readRTD(); // Biblioteca Adafruit MAX31865
 }
 
-// input and output variables
+// variables de entrada y salida
 double in_pwm = 0;
 double out_celsius = 0;
 
 void loop() {
-    // ensure notion of fixed sampling
+    // asegurar noción de muestreo fijo
     t_current = 0;
 
     while (countseq >= 0) {
-        /* MAX-OUTPUT SYS ID- START */
-        /* log the output every dt milli-secs  */
+        /* ID SISTEMA SALIDA-MÁX - INICIO */
+        /* registrar la salida cada dt milisegundos  */
         if ( millis() - t_current >= dt) {
             in_pwm = (4095/10.0)*max_in;
-            dac.setVoltage(in_pwm,"false"); // pass in max-input value to dac
-            out_celsius = thermo.temperature(100,430.0); // get the output temperature
+            dac.setVoltage(in_pwm,"false"); // pasar valor de entrada máx. al dac
+            out_celsius = thermo.temperature(100,430.0); // obtener la temperatura de salida
             t_current = millis();
         }
 
-        // display input_pwm, output_celsius and current discrete-time step.
-        // TODO: note down the maximum value
-        //  where the out_celsius becomes averagely steady
+        // mostrar input_pwm, output_celsius y paso de tiempo discreto actual.
+        // TODO: anotar el valor máximo
+        //  donde out_celsius se vuelve estable en promedio
         Serial.print((String) in_pwm + ", celsius: " + out_celsius +
                     ", countseq: " + countseq);
         Serial.println(F("---\n"));

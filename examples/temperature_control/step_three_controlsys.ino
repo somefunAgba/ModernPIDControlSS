@@ -1,6 +1,6 @@
 /*
- *  STEP3: CLOSED-LOOP CONTROL OF THE OUTPUT-TEMPERATURE
- *         USING A PID-CONTROL INPUT TO THE SYSTEM
+ *  PASO3: CONTROL EN LAZO CERRADO DE LA TEMPERATURA DE SALIDA
+ *         USANDO UNA ENTRADA DE CONTROL PID AL SISTEMA
  */
 #include "Arduino.h"
 
@@ -8,67 +8,67 @@
 #include "Adafruit_MCP4725.h"
 #include "Adafruit_MAX31865_library/Adafruit_MAX31865.h"
 
-/*PID Library*/
+/*Biblioteca PID*/
 #include "ModernPIDControlSS.h"
 
-/* Global Declarations */
+/* Declaraciones Globales */
 
-/* timings */
-int countseq = 0; // take note of this time-step variable
-//int max_discrete_time_count = 5000; // vary as desired
+/* temporización */
+int countseq = 0; // tomar nota de esta variable de paso de tiempo
+//int max_discrete_time_count = 5000; // variar según se desee
 
 double t = 0;
-double dt_control = 0.1; // control sampling-time; you can play with this as desired
-double dt_sys = 1.0; // equivalent to 1 seconds
+double dt_control = 0.1; // tiempo de muestreo del control; puedes jugar con esto como desees
+double dt_sys = 1.0; // equivalente a 1 segundo
 double t_prev_sys = -dt_sys;
 double t_start = 0;
 
 
-// set reference output celsius
+// establecer salida de referencia en celsius
 double ref_celsius = 0;
-// input and output variables
+// variables de entrada y salida
 int in_pwm;
 double in_val;
 double out_celsius = 0;
 
-// TODO: initialize other libraries for the DAC and ADC
-Adafruit_MCP4725 dac; // Adafruit MCP4725 dac
-Adafruit_MAX31865 thermo = Adafruit_MAX31865(10,11,12,13); // Adafruit MAX31865 PT100 adc
+// TODO: inicializar otras bibliotecas para el DAC y ADC
+Adafruit_MCP4725 dac; // DAC Adafruit MCP4725
+Adafruit_MAX31865 thermo = Adafruit_MAX31865(10,11,12,13); // ADC Adafruit MAX31865 PT100
 
 
-/* Parameters PID Structure Config. */
-// 10 -> max control input, 0 -> min control input in voltage
+/* Config. de Parámetros de la Estructura PID */
+// 10 -> entrada de control máx., 0 -> entrada de control mín. en voltaje
 PIDNet  PID_I(ref_celsius, out_celsius, dt_control,10, 0, 0, 0);
 cplmfc cplmfc_tuner;
 
 
 void setup() {
-    // Turn on Serial Comms.
-    // 9600 baud is a compromise setting between easy to kill a runaway process
-    // and very slow process
-    Serial.begin(9600); // Can Go Up to 2M
+    // Activar Comunicaciones Seriales.
+    // 9600 baudios es una configuración de compromiso entre fácil de detener un proceso fuera de control
+    // y un proceso muy lento
+    Serial.begin(9600); // Puede ir hasta 2M
 
-    //TODO: setup DAC and ADC
-    dac.begin(0x62); // Adafruit MCP4725A1 library
-    thermo.readRTD(); // Adafruit MAX31865 library
+    //TODO: configurar DAC y ADC
+    dac.begin(0x62); // Biblioteca Adafruit MCP4725A1
+    thermo.readRTD(); // Biblioteca Adafruit MAX31865
 
-    /* Parameters PID Structure Config. */
+    /* Config. de Parámetros de la Estructura PID */
      PID_I.set_bc_follow(0,0,0);
 
-    /* CPLMFC Tuning HyperParameter Config. */
-    /* Hyper-Parameter for Kp and Critic Weights */ // for P, I, D
-    //TODO: increase alpha steadily to increase fast response;
+    /* Config. de Hiperparámetros de Ajuste CPLMFC */
+    /* Hiperparámetro para Kp y Pesos Críticos */ // para P, I, D
+    //TODO: incrementar alfa gradualmente para aumentar la respuesta rápida;
     //cplmfc_tuner.set_alpha_critics( PID_I, alpha, lambda_i, lambda_d)
     cplmfc_tuner.set_alpha_critics( PID_I,10.0,0.5,0.1);
 
-    /* PID Commonsense Model Config. */
-    // note: if the sampling-time is changed
-    // rerun the closed-loop settling-time identification
-    // to get the correct N_ts and N_tau_l
-    // TODO: replace with identified settling-time count from step 2
-    int N_ts = 228; // N_ts at 0.1secs;
-    // TODO: replace with identified delay-time count
-    //  (that is: maximum time-step at which output = 0)
+    /* Config. del Modelo de Sentido Común PID */
+    // nota: si se cambia el tiempo de muestreo
+    // volver a ejecutar la identificación del tiempo de establecimiento en lazo cerrado
+    // para obtener los N_ts y N_tau_l correctos
+    // TODO: reemplazar con el conteo de tiempo de establecimiento identificado del paso 2
+    int N_ts = 228; // N_ts a 0.1seg;
+    // TODO: reemplazar con el conteo de tiempo de retardo identificado
+    //  (es decir: paso de tiempo máximo en el que la salida = 0)
     int N_tau_l = 0;
     //cplmfc_tuner.begin( PID_I, N_ts, N_tau_l);
     cplmfc_tuner.begin( PID_I, N_ts, N_tau_l);
@@ -78,31 +78,31 @@ void setup() {
 char flag;
 
 void loop() {
-    // ensure notion of fixed sampling
+    // asegurar noción de muestreo fijo
     t_start = millis()/1E3;
     t = t_start;
     while (countseq >= 0) {
         t = millis()/1E3;
         t = t - t_start;
-        /* CLOSED-LOOP START */
-        // Run the PID and its tuning algorithm
+        /* INICIO LAZO CERRADO */
+        // Ejecutar el PID y su algoritmo de ajuste
         flag = PID_kernelOS( PID_I, cplmfc_tuner, t);
         if (flag) {
             countseq++;
             flag = 0;
             in_val = PID_I.u;
-            in_pwm = int((4095/10.0)*in_val); // convert input voltage to pwm
+            in_pwm = int((4095/10.0)*in_val); // convertir voltaje de entrada a pwm
         }
-        dac.setVoltage(in_pwm,"false"); // pass in max-input value to dac
+        dac.setVoltage(in_pwm,"false"); // pasar valor de entrada máx. al dac
 
-        /* SYSTEM OUTPUT SAMPLING-: EVERY DT_SYS SECONDS*/
+        /* MUESTREO DE SALIDA DEL SISTEMA-: CADA DT_SYS SEGUNDOS*/
         if ( t >= (t_prev_sys + dt_sys)) {
-            out_celsius = thermo.temperature(100,430.0); // get the output temperature
+            out_celsius = thermo.temperature(100,430.0); // obtener la temperatura de salida
             PID_I.y = out_celsius;
             t_prev_sys = t;
 
-            // display input_pwm, output_celsius and current discrete-time step.
-            // observe the values
+            // mostrar input_pwm, output_celsius y paso de tiempo discreto actual.
+            // observar los valores
             Serial.print((String) in_pwm + ", celsius: " + out_celsius +
                     ", countseq: " + countseq);
             Serial.println(F("---\n"));
