@@ -1,5 +1,5 @@
 //
-// Created by oasomefun@futa.edu.ng on 1/16/2020.
+// Creado por oasomefun@futa.edu.ng el 16/1/2020.
 //
 #ifndef FILTERFO_PASS_H
 #define FILTERFO_PASS_H
@@ -9,13 +9,13 @@
 #ifndef TAN_ST_C
 #define TAN_ST_C
 /**
- * Shanon's discrete-time
- * Bilinear pre-warping tan constant
+ * Constante tan de pre-distorsión bilineal
+ * en tiempo discreto de Shanon
  */
 inline constexpr double TAN_ST = 0.1583844403;
 #endif
 
-/* Class Declarations */
+/* Declaraciones de Clase */
 class filterFO_pass{
 public:
     explicit filterFO_pass();
@@ -24,4 +24,4 @@ public:
     void run(double&, double);
 };
 
-#endif //
+#endif // FILTERFO_PASS_H (El comentario original no tenía texto después de //, así que se mantiene igual)

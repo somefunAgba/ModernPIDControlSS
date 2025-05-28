@@ -1,5 +1,5 @@
 //
-// Created by oaosmefun@futa.edu.ng on 1/16/2020.
+// Creado por oaosmefun@futa.edu.ng el 16/1/2020.
 //
 
 #pragma once
@@ -7,19 +7,19 @@
 #ifndef TESTSYS_SS_H
 #define TESTSYS_SS_H
 
-//#include <stddef.h>
-//#include <stdlib.h>
-//#include <stdint.h>
+//#include <stddef.h> // Código comentado
+//#include <stdlib.h> // Código comentado
+//#include <stdint.h> // Código comentado
 
 #include <Arduino.h>
 
-/* Func Decls. */
+/* Declaraciones de Funciones. */
 void testsys_ss(double& y, double* x, double dt, double u, double xnoise, double ynoise);
 
 
 #endif //TESTSYS_SS_H
 /*
- * File trailer for testsys_ss.h
+ * Trailer de archivo para testsys_ss.h
  *
  * [EOF]
  */

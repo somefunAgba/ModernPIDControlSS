@@ -1,35 +1,35 @@
 
 /*
 *	nlsig.c
-*	Author: Oluwasegun Somefun. oasomefun@futa.edu.ng : 2020
-* 	Version: 1.0 Production
+*	Autor: Oluwasegun Somefun. oasomefun@futa.edu.ng : 2020
+* 	Versión: 1.0 Producción
 */
 
-/* Include Files */
+/* Archivos de Inclusión */
 #include "nlsig.h"
 
-/* Function Definitions */
+/* Definiciones de Funciones */
 /*
- * NLOGISTIC-SIGMOID FUNCTION
+ * FUNCIÓN SIGMOIDE N-LOGÍSTICA
  *
- *  ARGUMENTS:
+ *  ARGUMENTOS:
  *			y, dy_dx
  *			x,  %inlen
- *			double xmax, ymax -> in max-min limits
- *          double xmin, ymin -> out max-min limits
- *          int n -> logistic sigmoid type,
- *			double lambda -> hyper-parameter, controls rate of growth
- *			char isreverse -> default: 0 logic for forward (0) 
- *						   or reverse (1) sigmoid
+ *			double xmax, ymax -> límites max-min de entrada
+ *          double xmin, ymin -> límites max-min de salida
+ *          int n -> tipo de sigmoide logística,
+ *			double lambda -> hiperparámetro, controla la tasa de crecimiento
+ *			char isreverse -> por defecto: lógica 0 para sigmoide directa (0) 
+ *						   o inversa (1)
  *
  */
 void nlsig(double& y, const double& x, double xmax, double xmin, double ymax, double ymin,
 			const int n, const double lambda, int safety, const unsigned char isreverse) {
 
-// Obtain length of input:
-// size_t insize = (int) (sizeof x - 1) * (sizeof *x);
-// int inlen =  insize / (sizeof *x);
-// printf("%d\n",inlen); // debug
+// Obtener longitud de la entrada:
+// size_t insize = (int) (sizeof x - 1) * (sizeof *x); // Código comentado
+// int inlen =  insize / (sizeof *x); // Código comentado
+// printf("%d\n",inlen); // depuración
 
 double e, dy, dx, N, alpha, tau, u;
 double delta_i[n], v_i[n];
@@ -39,7 +39,7 @@ int c;
 	if (safety!=0) {
 		safety = min(100,max(-100,safety));
 		e = safety/100.0;
-		// set constraints, max and min
+		// establecer restricciones, max y min
 		ymin = (1-e)*ymin;
 		ymax = (1-e)*ymax;
 		xmin = (1-e)*xmin;
@@ -51,42 +51,42 @@ int c;
 		c = 1;
 	}
 
-	// quantize or partition the input-output space by n.
-	// A greater n is a more finer space
-	// The most sparse or coarse space is n = 1
+	// cuantizar o particionar el espacio de entrada-salida por n.
+	// Un n mayor es un espacio más fino
+	// El espacio más disperso o grueso es n = 1
 
-	// input-output interval spacing
+	// espaciado del intervalo de entrada-salida
 	dy =(ymax-ymin)/N;
 	dx =(xmax-xmin)/N;
     
 	y = ymin;
-	//dy_dx =0;
+	//dy_dx =0; // Código comentado
     
-	// logistic rate
+	// tasa logística
     alpha = lambda * (2/dx);
-	// derivative constant
+	// constante derivativa
 	tau = alpha/dy;
 
     for (int id = 0; id < n; id++) {
-		// inflections
+		// inflexiones
         delta_i[id] = (xmin) + (dx*(id + 0.5)); // id+1-0.5 = id+0.5
 		
-		// partial output
+		// salida parcial
 		u = c*alpha*(x-delta_i[id]);
 		v_i[id] = dy/(1+exp(u));
-		//v_i[id] = dy/(1+exp_by_ones<double>(u)); // fast approximation
+		//v_i[id] = dy/(1+exp_by_ones<double>(u)); // aproximación rápida
 		
-		// output and derivative
+		// salida y derivada
 		y = y + v_i[id];
-		//dy_dx = dy_dx + ( v_i[id]*(dy - v_i[id]) );
+		//dy_dx = dy_dx + ( v_i[id]*(dy - v_i[id]) ); // Código comentado
     }
 	
 	y = y + 0.0;
-	//dy_dx = tau * dy_dx;
+	//dy_dx = tau * dy_dx; // Código comentado
 
-    // Serial.print("y: "); Serial.println(y);
-	// Serial.print("dydx: "); Serial.println(dy_dx);
+    // Serial.print("y: "); Serial.println(y); // Código comentado
+	// Serial.print("dydx: "); Serial.println(dy_dx); // Código comentado
 
 
-	// END
+	// FIN
 }

@@ -1,14 +1,14 @@
 /*
-  File: sfunPID.h
+  Archivo: sfunPID.h
  
-//  Author: oasomefun@futa.edu.ng            : 2019
+//  Autor: oasomefun@futa.edu.ng            : 2019
  
  */
 
 
-//#include <stddef.h>
-//#include <stdlib.h>
-//#include <stdint.h>
+//#include <stddef.h> // Código comentado
+//#include <stdlib.h> // Código comentado
+//#include <stdint.h> // Código comentado
 
 #ifndef SFUNPID_H
 #define SFUNPID_H
@@ -16,13 +16,13 @@
 #include <Arduino.h>
 #include "cplmfc/filterFO_pass.h"
 
-/* Data Structure-> Class Decl.*/
-/* class PIDNet*/
+/* Estructura de Datos-> Declaración de Clase.*/
+/* clase PIDNet*/
 class PIDNet {
 public:
     explicit PIDNet(double, double, double, int, int, int, int);
 
-    // friend void sfunPID_kernel(PIDNet& Knet, const double& t);
+    // friend void sfunPID_kernel(PIDNet& Knet, const double& t); // Código comentado
     void compute(const double&);
     void set_bc_follow(const int&, const int&, const char&);
 
@@ -63,42 +63,42 @@ public:
     int b = 1;
     int c = 0;
 
-    double kpi; // bilinear constant
-    double Tf; // first-order filter
+    double kpi; // constante bilineal
+    double Tf; // filtro de primer orden
 
     filterFO_pass filter_u;
     double uf;
 
 };
 
-//PIDNet::~PIDNet() = default;
-// void sfunPID_kernel(PIDNet& Knet, const double& t);
-//#define maxim(a,b)	(((a) > (b)) ? (a) : (b))
-//#define minim(a,b)	(((a) < (b)) ? (a) : (b))
+//PIDNet::~PIDNet() = default; // Código comentado
+// void sfunPID_kernel(PIDNet& Knet, const double& t); // Código comentado
+//#define maxim(a,b)	(((a) > (b)) ? (a) : (b)) // Código comentado
+//#define minim(a,b)	(((a) < (b)) ? (a) : (b)) // Código comentado
 
 /*
- * Dead-zone disturbance simulation
+ * Simulación de perturbación de zona muerta
  */
 template<class T>
 void dead_zone(T&, const int&, const int&);
 
-// expected type is floating-point
+// el tipo esperado es punto flotante
 template<class T>
 void dead_zone(T& uin, const int& dead_max, const int& dead_min) {
-/*  Actual Control Input Constraints for u */
-/* saturation equivalence of saturation, dead-zone and coulomb friction */
-// nl(.) 1-2 . dead-zone, min and inverse dead-zone, max
+/*  Restricciones Reales de Entrada de Control para u */
+/* equivalencia de saturación, zona muerta y fricción de Coulomb */
+// nl(.) 1-2 . zona muerta, mín y zona muerta inversa, máx
     if ((fabs(uin)<=fabs(dead_min))) {
-// 1. less or at dead-zone (minimum limit)
+// 1. menor o en la zona muerta (límite mínimo)
         uin = 0;
     }
     else if ((fabs(uin)>fabs(dead_min)) && (fabs(uin)<=fabs(dead_max))) {
-// 2. at inverse dead-zone (maximum limit)
-        uin = copysign(dead_max, uin); // if u < 0, u = -deadmax
+// 2. en la zona muerta inversa (límite máximo)
+        uin = copysign(dead_max, uin); // si u < 0, u = -deadmax
     }
     else {
-// 3. out of inverse dead-zone (max limit)
-// added deadmax as disturbance, effect of coulomb friction in a sense.
+// 3. fuera de la zona muerta inversa (límite máx)
+// deadmax añadido como perturbación, efecto de la fricción de Coulomb en cierto sentido.
         uin = copysign(fabs(uin+dead_max), uin);
     }
 
@@ -107,6 +107,6 @@ void dead_zone(T& uin, const int& dead_max, const int& dead_min) {
 #endif // SFUNPID_H
 
 /*
-  File trailer for sfunPID.h
+  Trailer de archivo para sfunPID.h
   [EOF]
 */

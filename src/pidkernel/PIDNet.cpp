@@ -1,15 +1,15 @@
 
 /*
- * File: sfunPID_kernel.c
- * SOMEFUN'S Modern PID Controller Architecture
+ * Archivo: sfunPID_kernel.c
+ * Arquitectura Moderna del Controlador PID de SOMEFUN
  * oasomefun@futa.edu.ng            : 2019, 2020
  */
 
-/* Include Files */
+/* Archivos de Inclusión */
 #include "PIDNet.h"
 #include "helpers/norm++kernel.h"
 
-/* Instance Init */
+/* Inicialización de Instancia */
 PIDNet::PIDNet(double ref, double yout, double dt,
         int umax_lim, int umin_lim, int dead_max, int dead_min) {
     follow = 0;
@@ -52,11 +52,11 @@ PIDNet::PIDNet(double ref, double yout, double dt,
     b = 1;
     c = 0;
 
-    /* discretization */
+    /* discretización */
     double cut_freq = (PI)/(10.0*dt);
-    /* first-order lpf time-constant for derivative */
-    // pre-warped bilinear constant, and filter time-constant
-    //double st = tan(PI/20.0);
+    /* constante de tiempo de lpf (filtro paso bajo) de primer orden para la derivada */
+    // constante bilineal pre-distorsionada y constante de tiempo del filtro
+    //double st = tan(PI/20.0); // Código comentado
     kpi = cut_freq/TAN_ST;
     Tf = Ts/(2.0*TAN_ST);
 
@@ -64,32 +64,32 @@ PIDNet::PIDNet(double ref, double yout, double dt,
     uf = 0;
 }
 
-/* Function Definitions */
+/* Definiciones de Funciones */
 /*
- *  This function implements the 2-DOF PID control algorithm in bilinear realization.
- * Arguments    : paramsPID_T *Knet
- * Return Type  : void
+ *  Esta función implementa el algoritmo de control PID 2-DOF (Dos Grados de Libertad) en realización bilineal.
+ * Argumentos    : paramsPID_T *Knet
+ * Tipo de Retorno  : void
  */
 void PIDNet::compute(const double& t) {
 
     double ym, yfict, e_u, Keu, ep, kui;
 
     T_prev = t;
-    /*  Discretization Scheme */
-    /*  Bilinear fractional parametrization */
-    /*  constrain the discretization tuner to be within the unit */
-    /*  circle limits of 0 and 1. */
+    /*  Esquema de Discretización */
+    /*  Parametrización fraccional bilineal */
+    /*  restringir el sintonizador de discretización para que esté dentro de la unidad */
+    /*  límites del círculo de 0 y 1. */
 
-    /* bilinear constant */
-//    // kpi = 2.0/ Ts;
-//    cut_freq = (PI)/(10.0*Ts);
-//    /* first-order lpf time-constant for derivative */
-//    // pre-warped bilinear constant, and filter time-constant
-//    st = tan(PI/20.0);
-//    kpi = cut_freq/st;
-//    Tf = Ts/(2.0*st);
+    /* constante bilineal */
+//    // kpi = 2.0/ Ts; // Código comentado
+//    cut_freq = (PI)/(10.0*Ts); // Código comentado
+//    /* constante de tiempo de lpf (filtro paso bajo) de primer orden para la derivada */
+//    // constante bilineal pre-distorsionada y constante de tiempo del filtro
+//    st = tan(PI/20.0); // Código comentado
+//    kpi = cut_freq/st; // Código comentado
+//    Tf = Ts/(2.0*st); // Código comentado
 
-    /*  Inputs */
+    /*  Entradas */
     if (follow==1) {
         ym = this->ym;
     }
@@ -98,85 +98,85 @@ void PIDNet::compute(const double& t) {
         ym = this->ym;
     }
 
-    /*  output recalculation AWU, anti-windup */
+    /*  recálculo de salida AWU, anti-windup */
     e_u = (u-v);
-    //  This covers a decoupled PID structure instead of the
-    //  error recalculation that covers a 1-DoF structure of error only.
-    /*  AWUP output recalculation coefficient */
+    //  Esto cubre una estructura PID desacoplada en lugar del
+    //  recálculo de error que cubre una estructura de 1-DoF (Un Grado de Libertad) solo de error.
+    /*  Coeficiente de recálculo de salida AWUP */
     Keu = Kp+(0.5*Ts*Ki)+((2/Ts)*Kd);
     kui = 1.5F/Ki;
     yfict = y;
     ua = e_u/Keu;
     yfict += (ua);
 
-    /* Previous Pass*/
+    /* Paso Anterior*/
 
-    /*  D */
-    ud *= (kpi*Tf-1); // previous ud
-    ud -= kpi*Td*(ed); // previous ed
+    /*  D */ // Término Derivativo
+    ud *= (kpi*Tf-1); // ud anterior
+    ud -= kpi*Td*(ed); // ed anterior
     
-    /*  I */
-    ui += (1/(Ti*kpi))*(ei); // previous ui and ei
+    /*  I */ // Término Integral
+    ui += (1/(Ti*kpi))*(ei); // ui y ei anteriores
     ui -= kui*(upd);
 
-    /* Current Pass */
+    /* Paso Actual */
 
-    /*  Errors */
+    /*  Errores */
     ep = (b*ym)-yfict;
     e = r-y;
-    // integral input recalculation
+    // recálculo de entrada integral
     ei = (ym-yfict)+e_u;
     ed = (c*ym)-yfict;
 
-    /*  Individual Output Terms */
-    /*  P */
+    /*  Términos de Salida Individuales */
+    /*  P */ // Término Proporcional
     up = (ep);
 
-    /*  D */
+    /*  D */ // Término Derivativo
     ud += kpi*Td*(ed);
     ud = ud/(kpi*Tf+1);
 
     /* PD */
-    /*  change in P, D contribution, bumpless P, D . stores current to previous */
-    // error of previous PD contribution if bigger than output
+    /*  cambio en la contribución P, D, P, D sin saltos. almacena actual a anterior */
+    // error de la contribución PD anterior si es mayor que la salida
     upd = (up+ud);
 
-    /*  I */
+    /*  I */ // Término Integral
     ui += (1/(Ti*kpi))*(ei);
-    /*  integral output recalculation */
+    /*  recálculo de salida integral */
     ui -= ua;
     ui += kui*(upd);
 
-    /*  Output Sum of Contributing Terms */
-    /* Criticize*/
+    /*  Suma de Salida de Términos Contribuyentes */
+    /* Criticar (Evaluar)*/
     e_t = (up+lambdai*(ui)+lambdad*ud);
     v = Kp*e_t;
-    /* combined output recalculation */
+    /* recálculo de salida combinada */
     uf = v-ua;
 
-    /*  Actual Control Input Constraints for u */
-    //Serial.print("bef_ u="); Serial.println( u);
+    /*  Restricciones Reales de Entrada de Control para u */
+    //Serial.print("bef_ u="); Serial.println( u); // Código comentado
 
-    /* Hard Saturation */
-    //filter_u.run(u,uf); // filter
+    /* Saturación Dura */
+    //filter_u.run(u,uf); // filtro
     u = uf;
     u = fmax((double) umin,fmin(u, (double) umax ));
     uo = u;
-    //dead_zone<double>(uo, dead_max, dead_min);
-    // uo = fmax((double) umin, fmin(uo, (double) umax ));
+    //dead_zone<double>(uo, dead_max, dead_min); // Código comentado
+    // uo = fmax((double) umin, fmin(uo, (double) umax )); // Código comentado
 
-    /* Misc. House Keeping */
-    // increment internal sample count for the PID.
+    /* Mantenimiento Varios. */
+    // incrementar contador interno de muestras para el PID.
     countseq += 1;
 
 }
 /**************************************************************************/
 /*!
-    @brief  Sets three parameters in the PID-control structure
-    @param b 2DOF-PID set-point weighting constant: 0 or 1
-    @param c 2DOF PID derivative weighting constant: 0 or 1
-    @param follow logic to enable set-point filtering: 0 or 1
-    @returns void.
+    @brief  Establece tres parámetros en la estructura de control PID
+    @param b Constante de ponderación del punto de ajuste PID-2DOF: 0 o 1
+    @param c Constante de ponderación derivativa PID-2DOF: 0 o 1
+    @param follow Lógica para habilitar el filtrado del punto de ajuste: 0 o 1
+    @returns void (nada).
 */
 /**************************************************************************/
 void PIDNet::set_bc_follow(const int& b, const int& c, const char& follow) {
@@ -186,48 +186,48 @@ void PIDNet::set_bc_follow(const int& b, const int& c, const char& follow) {
 }
 
 
-// SATURATION
-// u = maxim((double)  umin, (minim( u, (double)  umax)));
+// SATURACIÓN
+// u = maxim((double)  umin, (minim( u, (double)  umax))); // Código comentado
 
-/* Logistic Saturation*/
-// nlsig( u, du,  u, (double) umax, (double) umin,
-//        (double) umax, (double) umin,
-//        33, 6, 0, 0);
-//Serial.print("aft_ u="); Serial.println( u);
+/* Saturación Logística*/
+// nlsig( u, du,  u, (double) umax, (double) umin, // Código comentado
+//        (double) umax, (double) umin, // Código comentado
+//        33, 6, 0, 0); // Código comentado
+//Serial.print("aft_ u="); Serial.println( u); // Código comentado
 
-//    double u_norm[1] = {1.0};
-//    double u_act[1] = { u};
+//    double u_norm[1] = {1.0}; // Código comentado
+//    double u_act[1] = { u}; // Código comentado
 //
-//    //Serial.print("prior: "); Serial.println( u);
-//    normalize<double>(u_act, u_norm,  umax,  umin);
-//    // Serial.print("norm: "); Serial.println(u_norm[0]);
-//    u_norm[0] = nlsig(u_norm[0], 1.0, -1.0,
-//            1.0, -1.0,
-//            33, 6, 0);
-//    //Serial.print("out_norm: "); Serial.println(u_norm[0]);
-//    denormalize<double>(u_norm, u_act,  umax,  umin);
-//     u = u_act[0];
-//    //Serial.print("after: "); Serial.println( u);
+//    //Serial.print("prior: "); Serial.println( u); // Código comentado
+//    normalize<double>(u_act, u_norm,  umax,  umin); // Código comentado
+//    // Serial.print("norm: "); Serial.println(u_norm[0]); // Código comentado
+//    u_norm[0] = nlsig(u_norm[0], 1.0, -1.0, // Código comentado
+//            1.0, -1.0, // Código comentado
+//            33, 6, 0); // Código comentado
+//    //Serial.print("out_norm: "); Serial.println(u_norm[0]); // Código comentado
+//    denormalize<double>(u_norm, u_act,  umax,  umin); // Código comentado
+//     u = u_act[0]; // Código comentado
+//    //Serial.print("after: "); Serial.println( u); // Código comentado
 
-// Serial.print("UPWM: ");Serial.println( u); // debug
+// Serial.print("UPWM: ");Serial.println( u); // depuración
 
 
-//    /* SATURATION EQUIVALENCE OF SATURATION, DEAD-ZONE AND COULOMB FRICTION */
-//    // NL(.) 1-2 . DEAD-ZONE, min AND INVERSE DEAD-ZONE, max
-//    if ((fabs( u) <= fabs( zerotol))) {
-//        // 1. less or at dead-zone (minimum limit)
-//         u = 0;
-//    } else if ((fabs( u) > fabs( zerotol)) && (fabs( u) <= fabs( deadmax))) {
-//        // 2. at inverse dead-zone (maximum limit)
-//         u = copysign( deadmax,  u); // if u < 0, u = -deadmax
-//    } else {
-//        // 3. out of inverse dead-zone (max limit)
-//        // added deadmax as disturbance, effect of coulomb friction in a sense.
-//         u = copysign(fabs( u +  deadmax),  u);
+//    /* EQUIVALENCIA DE SATURACIÓN, ZONA MUERTA Y FRICCIÓN DE COULOMB */
+//    // NL(.) 1-2 . ZONA MUERTA, mín Y ZONA MUERTA INVERSA, máx
+//    if ((fabs( u) <= fabs( zerotol))) { // Código comentado
+//        // 1. menor o en la zona muerta (límite mínimo)
+//         u = 0; // Código comentado
+//    } else if ((fabs( u) > fabs( zerotol)) && (fabs( u) <= fabs( deadmax))) { // Código comentado
+//        // 2. en la zona muerta inversa (límite máximo)
+//         u = copysign( deadmax,  u); // si u < 0, u = -deadmax
+//    } else { // Código comentado
+//        // 3. fuera de la zona muerta inversa (límite máx)
+//        // deadmax añadido como perturbación, efecto de la fricción de Coulomb en cierto sentido.
+//         u = copysign(fabs( u +  deadmax),  u); // Código comentado
 //    }
 
 /*
- * File trailer for sfunPID.cpp
+ * Trailer de archivo para sfunPID.cpp
  *
  * [EOF]
  */

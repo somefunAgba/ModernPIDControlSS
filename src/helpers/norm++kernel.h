@@ -1,24 +1,24 @@
 //
-// Created by SomefunAgba on 6/13/2020.
+// Creado por SomefunAgba el 13/6/2020.
 //
 
 #ifndef MODERNPIDCONTROLSS_NORMS++_KERNEL_H
 #define MODERNPIDCONTROLSS_NORMS++_KERNEL_H
 
 //
-// File: norms++kernel.h
-// C/C++ source code created on  : 13-Jun-2020 09:37:47
+// Archivo: norms++kernel.h
+// Código fuente C/C++ creado el  : 13-Jun-2020 09:37:47
 //
 
-// Include Files
-// change headers for other projects, if not Arduino.
+// Archivos de Inclusión
+// cambiar encabezados para otros proyectos, si no es Arduino.
 #include <Arduino.h>
 
-// MIN-MAX MEDIAN (DE)-NORMALIZATION INTERVAL FUNCTIONS
-//  referred to the min-max median point.
+// FUNCIONES DE INTERVALO DE (DES)NORMALIZACIÓN MEDIANA MIN-MAX
+//  referido al punto medio min-max.
 // <oasomefun@futa.edu.ng> c. 2020
 
-/* DECLARE */
+/* DECLARAR */
 template<class T>
 T mid_interval(const T& max, const T& min);
 
@@ -28,35 +28,35 @@ void normalize(const T (&x)[N], T* x_n, const T& max, const T& min) noexcept;
 template<class T, size_t N>
 void denormalize(const T (&x_n)[N], T* x, const T& max, const T& min) noexcept;
 
-/* DEFINE */
+/* DEFINIR */
 
-// MEDIAN OF MIN-MAX INTERVAL
-// computes middle point in the closed interval [min max]
+// MEDIANA DEL INTERVALO MIN-MAX
+// calcula el punto medio en el intervalo cerrado [min max]
 template<class T>
 T mid_interval(const T& max, const T& min) {
     return (max+min)/2.0;
 }
 
-// NORMALIZATION referred to the min-max median point.
+// NORMALIZACIÓN referida al punto medio min-max.
 template<class T, size_t N>
 void normalize(const T (&x)[N], T* x_n, const T& max, const T& min) noexcept {
-// median point in the interval
+// punto medio en el intervalo
     const T mid = mid_interval(max, min);
-// sweep: normalize interval
+// barrido: normalizar intervalo
     for (int id = 0; id<N; id++) {
         x_n[id] = (x[id]-mid)/(max-mid);
-        // std::cout << x_n[id] << std::endl; //debug
+        // std::cout << x_n[id] << std::endl; //depuración
     }
 
-// normalized limits: always 1 and -1
+// límites normalizados: siempre 1 y -1
 }
 
-// DE-NORMALIZATION referred to the min-max median point.
+// DESNORMALIZACIÓN referida al punto medio min-max.
 template<class T, size_t N>
 void denormalize(const T (&x_n)[N], T* x, const T& max, const T& min) noexcept {
-// median point in the interval
+// punto medio en el intervalo
     const T mid = mid_interval(max, min);
-// sweep: denormalize interval
+// barrido: desnormalizar intervalo
     for (int id = 0; id<N; id++) {
         x[id] = (x_n[id]*(max-mid))+mid;
     }

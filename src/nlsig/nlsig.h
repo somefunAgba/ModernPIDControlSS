@@ -1,23 +1,23 @@
 /*
- * File: nlsig.h
+ * Archivo: nlsig.h
  *
- * C/C++ source code
+ * Código fuente C/C++
  */
 #ifndef NLSIG_H
 #define NLSIG_H
 
-/* Include Files */
-//#include <stdint.h>
-//#include <stddef.h>
-//#include <stdlib.h>
+/* Archivos de Inclusión */
+//#include <stdint.h> // Código comentado
+//#include <stddef.h> // Código comentado
+//#include <stdlib.h> // Código comentado
 #include <Arduino.h>
 #include "helpers/fast_exps.h"
 
-/* Function Declarations */
+/* Declaraciones de Funciones */
 
-//void nlsig(double& y, double& dy_dx, double x,
-//		double xmax, double xmin, double ymax, double ymin,
-//		int n=1, double lambda=6, int safety=0, unsigned char isreverse=0);
+//void nlsig(double& y, double& dy_dx, double x, // Código comentado
+//		double xmax, double xmin, double ymax, double ymin, // Código comentado
+//		int n=1, double lambda=6, int safety=0, unsigned char isreverse=0); // Código comentado
 
 void nlsig(double& y, const double& x,
         double xmax, double xmin, double ymax, double ymin,
@@ -25,7 +25,7 @@ void nlsig(double& y, const double& x,
 #endif
 
 /*
- * File trailer for nlsig.h
+ * Trailer de archivo para nlsig.h
  *
  * [EOF]
  */

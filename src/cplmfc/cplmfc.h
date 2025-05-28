@@ -1,8 +1,8 @@
 
 /*
- * File: CPLMFC.h
+ * Archivo: CPLMFC.h
  *
- * <CLOSED PID-LOOP MODEL> <FOLLOWING CONTROL> <METHOD> : 2019-2020
+ * <MODELO DE BUCLE PID CERRADO> <CONTROL DE SEGUIMIENTO> <MÉTODO> : 2019-2020
  *
  * oasomefun@futa.edu.ng. Copyright.2020
  */
@@ -10,7 +10,7 @@
 #ifndef CPLMFC_H
 #define CPLMFC_H
 
-/* Include Files */
+/* Archivos de Inclusión */
 #include <Arduino.h>
 #include "pidkernel/PIDNet.h"
 #include "cplmfc/filterFO_pass.h"
@@ -37,7 +37,7 @@ public:
 
 #endif
 /*
- * File trailer for cplmfc.h
+ * Trailer de archivo para cplmfc.h
  *
  * [EOF]
  */

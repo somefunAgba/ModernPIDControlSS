@@ -3,16 +3,16 @@
     @file     ModernPIDControlSS.h
     @author   Oluwasegun Somefun (oasomefun@futa.edu.ng, somefuno@oregonstate.edu)
 
-        A PID Library for the Arduino Board
+        Una librería PID para la placa Arduino
 
-        This is a streamlined PID library specifically made for Arduino use. It
-        uses modern control and signal processing theory (algorithms)
+        Esta es una librería PID optimizada específicamente para su uso con Arduino. Utiliza
+        teoría moderna de control y procesamiento de señales (algoritmos)
         ----> http://github.com/somefunagba/ModernPIDControlSS
 
-        This library is invested time and resources,
-        please support by sharing and starring on GitHub!
+        En esta librería se ha invertido tiempo y recursos,
+        ¡por favor apoya compartiendo y marcando como favorito en GitHub!
 
-        @section  HISTORY
+    @section  HISTORIAL
 
 */
 /**************************************************************************/
@@ -29,46 +29,46 @@
 
 /**************************************************************************/
 /*!
-    @brief  Starts the control and tuning loop evolution
-    @param Knet The PID controller instance in the loop
-    @param Tune The CPLMFC Tuning Algorithm Instance for this PID Controller
-    @param t The current time
-    @returns flag character.
+    @brief  Inicia la evolución del bucle de control y sintonización
+    @param Knet La instancia del controlador PID en el bucle
+    @param Tune La instancia del algoritmo de sintonización CPLMFC para este controlador PID
+    @param t El tiempo actual
+    @returns carácter de bandera (flag).
 */
 /**************************************************************************/
 inline int PID_kernelOS(PIDNet&, cplmfc&, const double&);
 /*!
-    @brief Starts the control loop evolution, while passing in manual tuinng params: Kp, Ti, Td
-    @param Knet The PID controller instance in the loop
-    @param t The current time
-    @param Kp proportional gain
-    @param Ti integral time constant
-    @param Td derivative time constant
-    @returns flag character.
+    @brief Inicia la evolución del bucle de control, pasando parámetros de sintonización manual: Kp, Ti, Td
+    @param Knet La instancia del controlador PID en el bucle
+    @param t El tiempo actual
+    @param Kp ganancia proporcional
+    @param Ti constante de tiempo integral
+    @param Td constante de tiempo derivativa
+    @returns carácter de bandera (flag).
 */
 inline char PID_kernelOS(PIDNet&, const double&, const float&, const float&, const float&);
 
 /*!
-    @brief Starts the control loop evolution, while passing in manual tuinng params: Kp, Ki, Kd
-    @param Knet The PID controller instance in the loop
-    @param t The current time
-    @param Kp proportional gain
-    @param Ki integral gain
-    @param Kd derivative gain
-    @param flag dummy argument: set as 0
-    @returns flag character.
+    @brief Inicia la evolución del bucle de control, pasando parámetros de sintonización manual: Kp, Ki, Kd
+    @param Knet La instancia del controlador PID en el bucle
+    @param t El tiempo actual
+    @param Kp ganancia proporcional
+    @param Ki ganancia integral
+    @param Kd ganancia derivativa
+    @param flag argumento ficticio (dummy): establecer como 0
+    @returns carácter de bandera (flag).
 */
 inline char PID_kernelOS(PIDNet&, const double&, const float&, const float&, const float&, char flag);
 
 /*
- * Auto. Adaptive CPLMFC
+ * CPLMFC Adaptativo Automático
  */
 int PID_kernelOS(PIDNet& Knet, cplmfc& Tune, const double& t) {
     int flag = 0;
     if (t >=( (Knet.T_prev+Knet.Ts)-(0.5*Knet.Ts) )) {
-        /* CPLM Evolution */
+        /* Evolución CPLM */
         Tune.run(Knet, t);
-        /* PID Control State Evolution: Architecture */
+        /* Evolución del Estado de Control PID: Arquitectura */
         Knet.compute(t);
         flag = 1;
     }
@@ -80,14 +80,14 @@ int PID_kernelOS(PIDNet& Knet, cplmfc& Tune, const double& t) {
  */
 char PID_kernelOS(PIDNet& Knet, const double& t, const float& Kp, const float& Ti, const float& Td) {
     char flag = 0;
-    /* Set Gains Manually */
+    /* Establecer Ganancias Manualmente */
     Knet.Kp = Kp;
     Knet.Ti = Ti;
     Knet.Td = Td;
     Knet.Ki = Kp/Ti;
     Knet.Kd = Kp*Td;
     if (t >=( (Knet.T_prev+Knet.Ts)-(0.5*Knet.Ts) )) {
-        /* PID Control State Evolution: Architecture */
+        /* Evolución del Estado de Control PID: Arquitectura */
         Knet.compute(t);
         flag = 1;
     }
@@ -98,21 +98,21 @@ char PID_kernelOS(PIDNet& Knet, const double& t, const float& Kp, const float& T
  * Manual II
  */
 char PID_kernelOS(PIDNet& Knet, const double& t, const float& Kp, const float& Ki, const float& Kd, char flag) {
-    // char flag = 0;
-    /* Set Gains Manually */
+    // char flag = 0; // Este comentario parece ser código desactivado, lo mantengo tal cual pero traduzco "flag" si fuera un comentario explicativo.
+                     // En este caso, "flag" es nombre de variable, así que no se traduce.
+    /* Establecer Ganancias Manualmente */
     Knet.Kp = Kp;
     Knet.Ki = Ki;
     Knet.Kd = Kd;
     Knet.Ti = Kp/Ki;
     Knet.Td = Kd/Kp;
     if (t >=( (Knet.T_prev+Knet.Ts)-(0.5*Knet.Ts) )) {
-        /* PID Control State Evolution: Architecture */
+        /* Evolución del Estado de Control PID: Arquitectura */
         Knet.compute(t);
         flag = 1;
     }
     return flag;
 }
 
-
-
+// MODERNPIDCONTROLSS_MODERNPIDCONTROLSS_H (Comentario de fin de guarda de inclusión, sin traducción)
 #endif //MODERNPIDCONTROLSS_MODERNPIDCONTROLSS_H

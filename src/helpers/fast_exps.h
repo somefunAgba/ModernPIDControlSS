@@ -1,5 +1,5 @@
 //
-// Created by SomefunAgba on 6/12/2020.
+// Creado por SomefunAgba el 6/12/2020.
 //
 #pragma once
 
@@ -26,14 +26,14 @@ static inline double exp_fast64(const double& x);
 
 
 
-/* EVEN INTEGER CHECK*/
+/* VERIFICACIÓN DE ENTERO PAR*/
 inline int is_int_even(const int& x) {
-// tests if an integer x is even or odd
-// returns: 1 for even x; 0 for odd x.
+// prueba si un entero x es par o impar
+// retorna: 1 para x par; 0 para x impar.
     return int( ~(x&1) );
 }
 
-/* EXP_BY ONES NORMALIZATION OF INPUT */
+/* NORMALIZACIÓN DE ENTRADA EXP_BY ONES */
 template<class T>
 T exp_by_ones(T x){
 	T y =1;
@@ -41,22 +41,22 @@ T exp_by_ones(T x){
 	if (x > 1.0) {
 		while( x > 1.0){
 			y = y * exp_fast<double>(1.0);
-			//y = y * exp_fast32(1.0);
-			//y = y * exp_fast64(1.0);
+			//y = y * exp_fast32(1.0); // Código comentado
+			//y = y * exp_fast64(1.0); // Código comentado
 			x = x - 1.0;
 		}
 	}else if (x < -1.0) {
-		while( x > 1.0){
+		while( x > 1.0){ // Debería ser x < -1.0 para que el bucle tenga sentido con la condición del if. Mantengo la lógica original.
 			y = y * exp_fast<double>(-1.0);
-			//y = y * exp_fast32(-1.0);
-			//y = y * exp_fast64(-1.0);
+			//y = y * exp_fast32(-1.0); // Código comentado
+			//y = y * exp_fast64(-1.0); // Código comentado
 			x = x + 1.0;
 		}
 	}
 	return ( y * exp_fast<double>(x) );
 }
 
-/* EXP_BY SQUARING*/
+/* EXP_BY SQUARING (EXPONENCIACIÓN POR CUADRADOS)*/
 template<class T>
 T expbysq(int x, int n){
 	int y = 1;
@@ -72,19 +72,19 @@ T expbysq(int x, int n){
 	while (n > 1) {
 		if (is_int_even(n)){
 			x = x * x;
-			n = int( n << 1);
+			n = int( n << 1); // Esto parece un error, debería ser n = n / 2 o n = n >> 1. Mantengo la lógica original.
 		} else{
 			y = x * y;
 			x = x * x;
-			n = int( (n-1) << 1);
+			n = int( (n-1) << 1); // Esto parece un error, debería ser n = (n - 1) / 2 o n = (n - 1) >> 1. Mantengo la lógica original.
 		}
 	}
 	return T(x * y);
 }
 
-/* EXP_APPROXIMATION 1*/
+/* APROXIMACIÓN EXP 1*/
 
-/* LARGE-LIMIT APPROXIMATION*/
+/* APROXIMACIÓN PARA LÍMITES GRANDES*/
 template<class T>
 T exp_fast(const T& x) {
 
@@ -95,7 +95,7 @@ T exp_fast(const T& x) {
 }
 
 
-/* DOUBLE PRECISION- UNION STRUCTURE APPROXIMATION */
+/* APROXIMACIÓN CON ESTRUCTURA UNION - DOBLE PRECISIÓN */
 double exp_fast32(const double& x){
 
     union{
@@ -103,9 +103,9 @@ double exp_fast32(const double& x){
       int32_t _i[2];
     } u{};
 
-//    const int32_t a = 1512775395;
-//    const int32_t b_c = 1072693248 - 60801;
-//    const double x_scaled = (x)/1000;
+//    const int32_t a = 1512775395; // Código comentado
+//    const int32_t b_c = 1072693248 - 60801; // Código comentado
+//    const double x_scaled = (x)/1000; // Código comentado
     u._i[0] = 0;
     u._i[1] = (1072693248 - 60801) + (1512775)*x;
     return u._d;
